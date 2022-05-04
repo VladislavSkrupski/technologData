@@ -37,7 +37,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="by.furniture.technologdata.controllers.MainFrameController">
     <MenuBar prefHeight="35.0" VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" style="-fx-alignment: CENTER; -fx-font-size: 14px" text="Файл">
@@ -48,7 +48,6 @@
         </Menu>
     </MenuBar>
 
-    <TextArea fx:id="testText" prefHeight="100.0" prefWidth="1000.0"/>
     <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <VBox prefHeight="515.0" prefWidth="350.0">
             <GridPane>
@@ -96,6 +95,12 @@
             <Button fx:id="detailsButton" alignment="CENTER" contentDisplay="CENTER" disable="true"
                     mnemonicParsing="false" onAction="#onDetailsShow" prefHeight="25.0" prefWidth="700.0"
                     text="Детально" textAlignment="CENTER">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </Button>
+            <Button fx:id="productionCard" onAction="#onProductionCardClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0"
+                    prefWidth="700.0" text="Производственная таблица" VBox.vgrow="ALWAYS">
                 <VBox.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </VBox.margin>

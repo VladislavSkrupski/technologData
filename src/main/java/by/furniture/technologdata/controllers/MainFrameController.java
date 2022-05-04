@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -45,6 +46,8 @@ public class MainFrameController implements BazisXMLTags {
     @FXML
     private Button exportButton;
     @FXML
+    private Button productionCard;
+    @FXML
     private Button detailsButton;
     @FXML
     private Label productOrderLabel;
@@ -56,8 +59,6 @@ public class MainFrameController implements BazisXMLTags {
     private Label productDeveloperLabel;
     @FXML
     private VBox materialCheckList;
-    @FXML
-    private TextArea testText;
     @FXML
     private TableView<TechnologData> technologTable;
 
@@ -88,7 +89,27 @@ public class MainFrameController implements BazisXMLTags {
             controller.setDetailsStage(stage);
             stage.showAndWait();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void onProductionCardClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainFrameController.class.getResource("/by/furniture/technologdata/fxml/order-production-card.fxml"));
+            AnchorPane pane = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Производственная карта заказа");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(ParseXML.getMainStage());
+            Scene scene = new Scene(pane);
+            stage.setScene(scene);
+            OrderProductionCardController controller = loader.getController();
+            controller.setOrderProductionCardStage(stage);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -173,11 +194,6 @@ public class MainFrameController implements BazisXMLTags {
             for (Panel panel : panels) {
                 mainMaterials.add(panel.getMainMaterial().getNomination());
             }
-            StringBuilder stringBuilder = new StringBuilder();
-            for (Panel panel : panels) {
-                stringBuilder.append(panel.getCodeOfDetail()).append(" ").append(panel.getLength()).append("x").append(panel.getWidth()).append("x").append(panel.getOverallThickness()).append(" ").append(panel.getMainMaterial().getNomination()).append(" кол-во ").append(panel.getAmount()).append("\n");
-            }
-            testText.setText(stringBuilder.toString());
             mainMaterialCheckBoxes.clear();
             materialCheckList.getChildren().clear();
             productOrderLabel.setText(product.getOrder());
