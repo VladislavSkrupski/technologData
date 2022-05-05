@@ -2,6 +2,7 @@ package by.furniture.technologdata.controllers;
 
 import by.furniture.technologdata.ParseXML;
 import by.furniture.technologdata.classes.*;
+import by.furniture.technologdata.classes.techClasses.PanelsByMaterial;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -61,11 +62,6 @@ public class MainFrameController implements BazisXMLTags {
     private VBox materialCheckList;
     @FXML
     private TableView<TechnologData> technologTable;
-
-//    @FXML
-//    private void initialize() {
-//
-//    }
 
     @FXML
     void onExitClick() {
@@ -502,8 +498,24 @@ public class MainFrameController implements BazisXMLTags {
         technologTable.getColumns().add(unitColumn);
     }
 
-    //public boolean showDetailsFrame() {
-
+    public ArrayList<PanelsByMaterial> getPanelsByMaterial(ArrayList<Panel> allPanels) {
+        HashMap<String, ArrayList<Panel>> panelsByMaterialMap = new HashMap<>();
+        for (Panel panel : allPanels) {
+            String materialName = panel.getMainMaterial().getNomination();
+            if (panelsByMaterialMap.containsKey(materialName)) {
+                panelsByMaterialMap.get(materialName).add(panel);
+            } else {
+                ArrayList<Panel> panelArrayList = new ArrayList<>();
+                panelArrayList.add(panel);
+                panelsByMaterialMap.put(materialName, panelArrayList);
+            }
+        }
+        ArrayList<PanelsByMaterial> panelsByMaterialArrayList = new ArrayList<>();
+        panelsByMaterialMap.forEach((k, v) -> {
+            panelsByMaterialArrayList.add(new PanelsByMaterial(k, v));
+        });
+        return panelsByMaterialArrayList;
+    }
 
 }
 

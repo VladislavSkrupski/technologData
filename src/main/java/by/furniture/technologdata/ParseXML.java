@@ -997,7 +997,7 @@ public class ParseXML extends Application implements BazisXMLTags {
                     break;
                 }
                 default: {
-                    System.out.println("Есть нераспознанные поля");
+                    System.out.println("Есть нераспознанные поля " + child.getNodeName());
                     break;
                 }
             }
@@ -1021,6 +1021,4 @@ public class ParseXML extends Application implements BazisXMLTags {
         }
         return nodeArrayList;
     }
-
-
 }
