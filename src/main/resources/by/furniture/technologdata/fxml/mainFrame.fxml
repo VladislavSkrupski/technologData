@@ -99,8 +99,8 @@
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </VBox.margin>
             </Button>
-            <Button fx:id="productionCard" onAction="#onProductionCardClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0"
-                    prefWidth="700.0" text="Производственная таблица" VBox.vgrow="ALWAYS">
+            <Button fx:id="productionCardButton" onAction="#onProductionCardClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0"
+                    prefWidth="700.0" text="Производственная таблица" VBox.vgrow="ALWAYS" disable="true">
                 <VBox.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </VBox.margin>

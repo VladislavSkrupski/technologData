@@ -14,7 +14,7 @@
                 <Insets />
             </VBox.margin>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-                <Label alignment="CENTER" contentDisplay="CENTER" text="Label">
+                <Label fx:id="orderNameLabel" alignment="CENTER" contentDisplay="CENTER" text="Label">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
@@ -68,17 +68,18 @@
                 </Label>
             </GridPane>
         </HBox>
-      <TableView editable="true" prefHeight="350.0" prefWidth="1200.0">
+      <TableView fx:id="byMaterialTableView" editable="true" prefHeight="350.0" prefWidth="1200.0">
         <columns>
-          <TableColumn minWidth="100.0" prefWidth="250.0" text="Материал" />
-          <TableColumn minWidth="100.0" prefWidth="250.0" text="Кромка" />
-            <TableColumn maxWidth="200.0" minWidth="20.0" prefWidth="91.0" text="Фрезеровка,&#10;шт." />
-            <TableColumn prefWidth="82.0" text="Склейка,&#10;кв.м/шт." />
-            <TableColumn prefWidth="68.0" text="Фасады,&#10;кв.м" />
-            <TableColumn prefWidth="63.0" text="Ручки,&#10;шт." />
-            <TableColumn prefWidth="74.0" text="Ручки &#10;полимер,&#10;м" />
-            <TableColumn prefWidth="72.0" text="Подбор,&#10;кв.м" />
-            <TableColumn prefWidth="78.0" text="Скосы ЛХ,&#10;шт." />
+          <TableColumn fx:id="materialNameTableColumn" minWidth="100.0" prefWidth="250.0" text="Материал" />
+          <TableColumn fx:id="edgeNameTableColumn" minWidth="100.0" prefWidth="250.0" text="Кромка" />
+            <TableColumn fx:id="edgeLengthTableColumn" prefWidth="84.0" text="Длина&#10;кромки, м" />
+            <TableColumn maxWidth="200.0" minWidth="20.0" prefWidth="89.0" text="Фрезеровка,&#10;шт." />
+            <TableColumn prefWidth="97.0" text="Склейка,&#10;кв.м/шт." />
+            <TableColumn prefWidth="79.0" text="Фасады,&#10;кв.м" />
+            <TableColumn prefWidth="61.0" text="Ручки,&#10;шт." />
+            <TableColumn prefWidth="78.0" text="Ручки &#10;полимер,&#10;м" />
+            <TableColumn prefWidth="75.0" text="Подбор,&#10;кв.м" />
+            <TableColumn prefWidth="79.0" text="Скосы ЛХ,&#10;шт." />
         </columns>
       </TableView>
         <HBox prefHeight="100.0" prefWidth="200.0" />

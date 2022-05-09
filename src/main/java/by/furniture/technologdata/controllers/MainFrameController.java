@@ -41,13 +41,15 @@ public class MainFrameController implements BazisXMLTags {
     private final TreeSet<String> mainMaterials = new TreeSet<>();
     private final ArrayList<TechnologData> technologDataArrayList = new ArrayList<>();
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
-    private final Product product = new Product();
+    public static Product product = new Product();
+
+    public static ArrayList<PanelsByMaterial> panelsByMaterialArrayList = new ArrayList<>();
     @FXML
     private MenuItem openFile;
     @FXML
     private Button exportButton;
     @FXML
-    private Button productionCard;
+    private Button productionCardButton;
     @FXML
     private Button detailsButton;
     @FXML
@@ -103,6 +105,7 @@ public class MainFrameController implements BazisXMLTags {
             stage.setScene(scene);
             OrderProductionCardController controller = loader.getController();
             controller.setOrderProductionCardStage(stage);
+
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -206,15 +209,19 @@ public class MainFrameController implements BazisXMLTags {
                 materialCheckList.getChildren().add(chk);
             }
             setDataToArrayList(panels);
+            panelsByMaterialArrayList.addAll(getPanelsByMaterial(panels));
+
             setTable(technologDataArrayList);
             exportButton.setDisable(false);
             detailsButton.setDisable(false);
+            productionCardButton.setDisable(false);
         }
     }
 
     @FXML
     void onExportToXLS() {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName(product.getNomination());
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Файл EXCEL", "*.xls"));
         File file = fileChooser.showSaveDialog(exportButton.getParent().getScene().getWindow());
 
