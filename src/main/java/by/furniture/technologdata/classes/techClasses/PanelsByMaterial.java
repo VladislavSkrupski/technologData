@@ -10,6 +10,15 @@ public class PanelsByMaterial {
     private final String nomination;
     private Integer amountOfPanels;
     private HashMap<String, Float> edgesWithLengthMap;
+
+    private boolean isSelected = false;
+    private boolean isFront = false;
+    private boolean isSkinali = false;
+    private boolean isWorktop = false;
+    private boolean isDVP = false;
+    private boolean isTemplate = false;
+    private boolean isTextureSelection = false;
+
     private final ArrayList<Panel> panels;
 
     public PanelsByMaterial(String nomination, ArrayList<Panel> panels) {
@@ -42,6 +51,62 @@ public class PanelsByMaterial {
 
     public HashMap<String, Float> getEdgesWithLengthMap() {
         return edgesWithLengthMap;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isFront() {
+        return isFront;
+    }
+
+    public void setFront(boolean front) {
+        isFront = front;
+    }
+
+    public boolean isSkinali() {
+        return isSkinali;
+    }
+
+    public void setSkinali(boolean skinali) {
+        isSkinali = skinali;
+    }
+
+    public boolean isWorktop() {
+        return isWorktop;
+    }
+
+    public void setWorktop(boolean worktop) {
+        isWorktop = worktop;
+    }
+
+    public boolean isDVP() {
+        return isDVP;
+    }
+
+    public void setDVP(boolean DVP) {
+        isDVP = DVP;
+    }
+
+    public boolean isTemplate() {
+        return isTemplate;
+    }
+
+    public void setTemplate(boolean template) {
+        isTemplate = template;
+    }
+
+    public boolean isTextureSelection() {
+        return isTextureSelection;
+    }
+
+    public void setTextureSelection(boolean textureSelection) {
+        isTextureSelection = textureSelection;
     }
 
     private void setAmountOfPanels() {
