@@ -234,9 +234,7 @@ public class MainFrameController implements BazisXMLTags {
             panelsByMaterialArrayList.addAll(getPanelsByMaterial(panels));
 
             setTable(technologDataArrayList);
-            exportButton.setDisable(false);
-            detailsButton.setDisable(false);
-            productionCardButton.setDisable(false);
+
         }
     }
 
@@ -288,14 +286,14 @@ public class MainFrameController implements BazisXMLTags {
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
         technologDataArrayList.clear();
-        technologDataArrayList.add(overallAmountOfDetails(panelArrayList));
+        //technologDataArrayList.add(overallAmountOfDetails(panelArrayList));
         technologDataArrayList.add(overallAmountOfROVERDetails(panelArrayList));
-        technologDataArrayList.add(overallThinDetails(panelArrayList));
-        technologDataArrayList.addAll(overallTollDetails(panelArrayList));
+        //technologDataArrayList.add(overallThinDetails(panelArrayList));
+        //technologDataArrayList.addAll(overallTollDetails(panelArrayList));
         technologDataArrayList.addAll(overallEdgeLength(panelArrayList));
         technologDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
-        technologDataArrayList.addAll(overallGrooves(panelArrayList));
-        technologDataArrayList.addAll(overallHoles(panelArrayList));
+        //technologDataArrayList.addAll(overallGrooves(panelArrayList));
+        //technologDataArrayList.addAll(overallHoles(panelArrayList));
     }
 
     void resetTableData(ArrayList<Panel> panels) {
