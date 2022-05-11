@@ -1,22 +1,16 @@
 package by.furniture.technologdata.controllers;
 
-import by.furniture.technologdata.ParseXML;
+import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.*;
-import by.furniture.technologdata.classes.techClasses.PanelsByMaterial;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -43,16 +37,10 @@ public class MainFrameController implements BazisXMLTags {
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
 
-    public static ArrayList<PanelsByMaterial> panelsByMaterialArrayList = new ArrayList<>();
-
     @FXML
     private MenuItem openFile;
     @FXML
     private Button exportButton;
-    @FXML
-    private Button productionCardButton;
-    @FXML
-    private Button detailsButton;
     @FXML
     private Label productOrderLabel;
     @FXML
@@ -86,7 +74,7 @@ public class MainFrameController implements BazisXMLTags {
                 DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 Document document = documentBuilder.parse(selectedFile);
                 Node root = document.getDocumentElement();
-                arrayNodes = ParseXML.getTagArray(root, new ArrayList<>());
+                arrayNodes = StartPointLauncher.getTagArray(root, new ArrayList<>());
                 for (Node node : arrayNodes) {
                     if (node.getNodeType() != Node.TEXT_NODE && node.getNodeName().equals(BazisXMLTags.PRODUCT)) {
                         NodeList productNodeList = node.getChildNodes();
@@ -145,7 +133,7 @@ public class MainFrameController implements BazisXMLTags {
                     }
                 }
                 for (Node panelNode : panelNodes) {
-                    panels.add(ParseXML.NodeToPanel(panelNode));
+                    panels.add(StartPointLauncher.NodeToPanel(panelNode));
                 }
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 e.printStackTrace();
@@ -169,10 +157,7 @@ public class MainFrameController implements BazisXMLTags {
                 materialCheckList.getChildren().add(chk);
             }
             setDataToArrayList(panels);
-            panelsByMaterialArrayList.addAll(getPanelsByMaterial(panels));
-
             setTable(technologDataArrayList);
-
         }
     }
 
@@ -224,14 +209,8 @@ public class MainFrameController implements BazisXMLTags {
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
         technologDataArrayList.clear();
-        //technologDataArrayList.add(overallAmountOfDetails(panelArrayList));
-        technologDataArrayList.add(overallAmountOfROVERDetails(panelArrayList));
-        //technologDataArrayList.add(overallThinDetails(panelArrayList));
-        //technologDataArrayList.addAll(overallTollDetails(panelArrayList));
-        technologDataArrayList.addAll(overallEdgeLength(panelArrayList));
         technologDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
-        //technologDataArrayList.addAll(overallGrooves(panelArrayList));
-        //technologDataArrayList.addAll(overallHoles(panelArrayList));
+        technologDataArrayList.addAll(overallEdgeLength(panelArrayList));
     }
 
     void resetTableData(ArrayList<Panel> panels) {
@@ -255,70 +234,6 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     //----------------------Конечные данные---------------------
-    public TechnologData overallAmountOfDetails(ArrayList<Panel> panelArrayList) {
-        int panelCount = 0;
-        for (Panel panel : panelArrayList) {
-            panelCount += panel.getAmount();
-        }
-        return new TechnologData("Общее количество деталей", String.valueOf(panelCount), "шт.");
-    }
-
-    public TechnologData overallAmountOfROVERDetails(ArrayList<Panel> panelArrayList) {
-        int countROVERDetails = 0;
-        for (Panel panel : panelArrayList) {
-            boolean toROVER = false;
-            if (panel.getCustomProperties() != null) {
-                for (CustomProperty customProperty : panel.getCustomProperties()) {
-                    if (customProperty.getName().equals("CutsROVER") && customProperty.getValue().equals("1")) {
-                        toROVER = true;
-                        break;
-                    }
-                }
-            }
-            if (!panel.isRectangular() || toROVER) {
-                countROVERDetails += panel.getAmount();
-            }
-        }
-        return new TechnologData("Детали, фрезеруемые на ROVER", String.valueOf(countROVERDetails), "шт.");
-    }
-
-    public TechnologData overallThinDetails(ArrayList<Panel> panelArrayList) {
-        int thinDetailsCount = 0;
-        for (Panel panel : panelArrayList) {
-            if (panel.getLength() <= 67 || panel.getWidth() <= 67) {
-                thinDetailsCount += panel.getAmount();
-            }
-        }
-        return new TechnologData("Количество узких деталей (до 67мм)", String.valueOf(thinDetailsCount), "шт.");
-    }
-
-    public ArrayList<TechnologData> overallTollDetails(ArrayList<Panel> panelArrayList) {
-        ArrayList<TechnologData> tollData = new ArrayList<>();
-        int countToll = 0;
-        float tollSquare = 0.0f;
-        for (Panel panel : panelArrayList) {
-            boolean countableToll = false;
-            int countTollPlastic = 0;
-            for (int a = 0; a < panel.getFacingSurfaces().size(); a++) {
-                if (panel.getFacingSurfaces().get(a) != null) {
-                    for (FacingSurface facingSurface : panel.getFacingSurfaces().get(a)) {
-                        if (facingSurface.getThickness() > 2) {
-                            countableToll = true;
-                            countTollPlastic++;
-                        }
-                    }
-                }
-            }
-            if (countableToll && ((countTollPlastic >= 1 && panel.getMainMaterial().getThickness() > 2) || countTollPlastic > 1)) {
-                countToll += panel.getAmount();
-                tollSquare += (panel.getLength() / 1000) * (panel.getWidth() / 1000) * panel.getAmount();
-            }
-        }
-        tollData.add(new TechnologData("Количество сросток (кроме пластиков)", String.valueOf(countToll), "шт."));
-        tollData.add(new TechnologData("Площадь сросток (кроме пластиков)", String.format("%.2f", tollSquare), "кв.м"));
-        return tollData;
-    }
-
     public ArrayList<TechnologData> overallEdgeLength(ArrayList<Panel> panelArrayList) {
         ArrayList<TechnologData> edgeData = new ArrayList<>();
         HashMap<String, Float> edgesMap = new HashMap<>();
@@ -336,12 +251,12 @@ public class MainFrameController implements BazisXMLTags {
                 }
             }
         }
-        edgesMap.forEach((s, aFloat) -> edgeData.add(new TechnologData(s, String.format("%.2f", aFloat / 1000), "м")));
+        edgesMap.forEach((s, aFloat) -> edgeData.add(new TechnologData(s, String.format("%.1f", aFloat / 1000), "м")));
         ArrayList<Float> values = new ArrayList<>(edgesMap.values());
         for (Float value : values) {
             fullLength += value;
         }
-        edgeData.add(new TechnologData("Общий метраж кромки", String.format("%.2f", fullLength / 1000), "м"));
+        edgeData.add(new TechnologData("Общий метраж кромки", String.format("%.1f", fullLength / 1000), "м"));
         return edgeData;
     }
 
@@ -395,52 +310,6 @@ public class MainFrameController implements BazisXMLTags {
         return materialsSquareData;
     }
 
-    public ArrayList<TechnologData> overallGrooves(ArrayList<Panel> panelArrayList) {
-        ArrayList<TechnologData> groovesData = new ArrayList<>();
-        HashMap<String, Float> groovesMap = new HashMap<>();
-        HashMap<String, Integer> groovesCountMap = new HashMap<>();
-        for (Panel panel : panelArrayList) {
-            if (panel.getGrooves() != null) {
-                panel.getGrooves().forEach(groove -> {
-                    if (groovesMap.containsKey(groove.getTitle())) {
-                        groovesMap.replace(groove.getTitle(), (groovesMap.get(groove.getTitle()) + groove.getLength() * groove.getAmount() * panel.getAmount()));
-                    } else {
-                        groovesMap.put(groove.getTitle(), groove.getLength() * groove.getAmount() * panel.getAmount());
-                    }
-                });
-                panel.getGrooves().forEach(groove -> {
-                    if (groovesCountMap.containsKey(groove.getTitle())) {
-                        groovesCountMap.replace(groove.getTitle(), (groovesCountMap.get(groove.getTitle()) + groove.getAmount() * panel.getAmount()));
-                    } else {
-                        groovesCountMap.put(groove.getTitle(), groove.getAmount() * panel.getAmount());
-                    }
-                });
-            }
-        }
-        groovesCountMap.forEach((s, aInt) -> groovesData.add(new TechnologData("Паз " + s, String.valueOf(aInt), "шт.")));
-        groovesMap.forEach((s, aFloat) -> groovesData.add(new TechnologData("Длина пазов " + s, String.format("%.2f", aFloat / 1000), "м")));
-        return groovesData;
-    }
-
-    public ArrayList<TechnologData> overallHoles(ArrayList<Panel> panelArrayList) {
-        ArrayList<TechnologData> holesData = new ArrayList<>();
-        HashMap<String, Integer> holesMap = new HashMap<>();
-        for (Panel panel : panelArrayList) {
-            if (panel.getHoles() != null) {
-                panel.getHoles().forEach(hole -> {
-                    String holeName = (hole.getType() + " " + String.format("%.1f", hole.getDiameter()) + (hole.getDepth() != null ? ("x" + String.format("%.1f", hole.getDepth())) : ""));
-                    if (holesMap.containsKey(holeName)) {
-                        holesMap.replace(holeName, holesMap.get(holeName) + panel.getAmount());
-                    } else {
-                        holesMap.put(holeName, panel.getAmount());
-                    }
-                });
-            }
-        }
-        holesMap.forEach((s, aInt) -> holesData.add(new TechnologData("Отверстие " + s, String.valueOf(aInt), "шт.")));
-        return holesData;
-    }
-
     //----------------------Вывод в таблицу---------------------
     void setTable(ArrayList<TechnologData> techDataList) {
         technologTable.getColumns().clear();
@@ -463,7 +332,7 @@ public class MainFrameController implements BazisXMLTags {
         technologTable.getColumns().add(unitColumn);
     }
 
-    public ArrayList<PanelsByMaterial> getPanelsByMaterial(ArrayList<Panel> allPanels) {
+    /*public ArrayList<PanelsByMaterial> getPanelsByMaterial(ArrayList<Panel> allPanels) {
         HashMap<String, ArrayList<Panel>> panelsByMaterialMap = new HashMap<>();
         for (Panel panel : allPanels) {
             String materialName = panel.getMainMaterial().getNomination();
@@ -480,7 +349,7 @@ public class MainFrameController implements BazisXMLTags {
             panelsByMaterialArrayList.add(new PanelsByMaterial(k, v));
         });
         return panelsByMaterialArrayList;
-    }
+    }*/
 
 }
 

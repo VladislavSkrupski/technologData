@@ -96,7 +96,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>by.furniture.technologdata/by.furniture.technologdata.ParseXML
+                            <mainClass>by.furniture.technologdata/by.furniture.technologdata.StartPointLauncher
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
