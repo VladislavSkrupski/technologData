@@ -44,6 +44,7 @@ public class MainFrameController implements BazisXMLTags {
     public static Product product = new Product();
 
     public static ArrayList<PanelsByMaterial> panelsByMaterialArrayList = new ArrayList<>();
+
     @FXML
     private MenuItem openFile;
     @FXML
@@ -95,6 +96,27 @@ public class MainFrameController implements BazisXMLTags {
     void onProductionCardClick() {
         try {
             FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainFrameController.class.getResource("/by/furniture/technologdata/fxml/chooseMaterialsFrame.fxml"));
+            VBox pane = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Выбор материалов");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(ParseXML.getMainStage());
+            Scene scene = new Scene(pane);
+            stage.setScene(scene);
+            ChooseMaterialFrameController controller = loader.getController();
+            controller.setChooseMaterialFrameStage(stage);
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        /*try {
+            FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainFrameController.class.getResource("/by/furniture/technologdata/fxml/order-production-card.fxml"));
             AnchorPane pane = loader.load();
             Stage stage = new Stage();
@@ -109,7 +131,7 @@ public class MainFrameController implements BazisXMLTags {
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @FXML
