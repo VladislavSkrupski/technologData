@@ -43,6 +43,13 @@
             <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#onOpenFile" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Открыть" />
             <MenuItem mnemonicParsing="false" onAction="#onExitClick" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Выход" />
         </Menu>
+      <Menu mnemonicParsing="false" text="Настройки">
+        <items>
+            <MenuItem mnemonicParsing="false" text="Параметры" />
+            <MenuItem mnemonicParsing="false" text="Сохранить настройки" />
+            <MenuItem mnemonicParsing="false" text="Восстановить настройки" />
+        </items>
+      </Menu>
     </MenuBar>
 
     <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">

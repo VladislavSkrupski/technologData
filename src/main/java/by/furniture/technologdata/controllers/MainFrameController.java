@@ -73,68 +73,6 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     @FXML
-    void onDetailsShow() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainFrameController.class.getResource("/by/furniture/technologdata/fxml/detailsFrame.fxml"));
-            VBox pane = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Подетальный список");
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(ParseXML.getMainStage());
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            DetailsFrameController controller = loader.getController();
-            controller.setDetailsStage(stage);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void onProductionCardClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainFrameController.class.getResource("/by/furniture/technologdata/fxml/chooseMaterialsFrame.fxml"));
-            VBox pane = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Выбор материалов");
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(ParseXML.getMainStage());
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            ChooseMaterialFrameController controller = loader.getController();
-            controller.setChooseMaterialFrameStage(stage);
-
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-        /*try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainFrameController.class.getResource("/by/furniture/technologdata/fxml/order-production-card.fxml"));
-            AnchorPane pane = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Производственная карта заказа");
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(ParseXML.getMainStage());
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            OrderProductionCardController controller = loader.getController();
-            controller.setOrderProductionCardStage(stage);
-
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-    }
-
-    @FXML
     void onOpenFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Спецификация Bazis XML", "*.xml"));
