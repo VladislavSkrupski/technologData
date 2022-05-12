@@ -40,14 +40,15 @@
 <VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.MainFrameController">
     <MenuBar prefHeight="35.0" VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" style="-fx-alignment: CENTER; -fx-font-size: 14px" text="Файл">
-            <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#onOpenFile" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Открыть" />
-            <MenuItem mnemonicParsing="false" onAction="#onExitClick" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Выход" />
+            <MenuItem fx:id="openFile" onAction="#onOpenFile" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Открыть" />
+            <MenuItem onAction="#onExitClick" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Выход" />
         </Menu>
-      <Menu mnemonicParsing="false" text="Настройки">
+      <Menu style="-fx-alignment: CENTER; -fx-font-size: 14px" text="Настройки">
         <items>
-            <MenuItem mnemonicParsing="false" text="Параметры" />
-            <MenuItem mnemonicParsing="false" text="Сохранить настройки" />
-            <MenuItem mnemonicParsing="false" text="Восстановить настройки" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Параметры" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="База плитных материалов" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Сохранить настройки" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Восстановить настройки" />
         </items>
       </Menu>
     </MenuBar>
