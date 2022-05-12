@@ -1,22 +1,40 @@
 package by.furniture.technologdata;
 
 import by.furniture.technologdata.classes.*;
+import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
+import by.furniture.technologdata.classes.techClasses.MaterialDB;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.poifs.filesystem.POIFSStream;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class StartPointLauncher extends Application implements BazisXMLTags {
 
     private static Stage mainStage;
+
+    public static final ConfigurationProperties configurationProperties = new ConfigurationProperties();
+
+    public static final HashMap<String, MaterialDB> materialDBList = new HashMap<>();
 
     public static Stage getMainStage() {
         return mainStage;
@@ -29,6 +47,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         Scene scene = new Scene(root);
         mainStage.setScene(scene);
         mainStage.setTitle("черновая оценка заказа");
+        materialDBList.putAll(getMaterialDBList());
         mainStage.show();
     }
 
@@ -38,6 +57,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
 
     /**
      * Метод для получения объекта панели из XML-спецификации
+     *
      * @param node DOM-объект содержащий в себе описание панели
      * @return объект панели со всеми доступными в XML-спецификации свойствами
      */
@@ -1013,7 +1033,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
 
     /**
      * Метод для преобразования дерева DOM-объектов в одномерный список
-     * @param node принимает корневой DOM-объект, в дальнейшем получая наследника рекурсией
+     *
+     * @param node          принимает корневой DOM-объект, в дальнейшем получая наследника рекурсией
      * @param nodeArrayList принимает на старте лист DOM-объектов, дописывая его с каждой последующей итерацией
      * @return одномерный список всех дочерних DOM-объектов
      */
@@ -1029,4 +1050,40 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         return nodeArrayList;
     }
+
+    /**
+     * Загружает базу материалов из файда MaterialDB.xls
+     *
+     * @return возвращает HashMap объектов MaterialDB с ключами из наименования материала
+     */
+    private static HashMap<String, MaterialDB> getMaterialDBList() {
+        String materialDBFilePath = "src/main/resources/by/furniture/technologdata/materialDB.xls";
+        HashMap<String, MaterialDB> materialDBS = new HashMap<>();
+        try (POIFSFileSystem materialDBFile = new POIFSFileSystem(new FileInputStream(materialDBFilePath))) {
+            HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
+            HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
+            for (int i = 1; i < materialDBSheet.getLastRowNum() + 1; i++) {
+                HSSFRow row = materialDBSheet.getRow(i);
+                HSSFCell articleCell = row.getCell(0);
+                HSSFCell nameCell = row.getCell(1);
+                HSSFCell listLengthCell = row.getCell(2);
+                HSSFCell listWidthCell = row.getCell(3);
+                HSSFCell listThicknessCell = row.getCell(4);
+                MaterialDB materialDB = new MaterialDB(
+                        articleCell.getStringCellValue(),
+                        nameCell.getStringCellValue(),
+                        (float) listLengthCell.getNumericCellValue(),
+                        (float) listWidthCell.getNumericCellValue(),
+                        (float) listThicknessCell.getNumericCellValue()
+                );
+                materialDBS.put(materialDB.getName(), materialDB);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return materialDBS;
+    }
+
 }
+

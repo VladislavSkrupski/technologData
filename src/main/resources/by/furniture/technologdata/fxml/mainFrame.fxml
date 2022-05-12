@@ -97,7 +97,12 @@
 
             </VBox>
         </VBox>
-        <TableView fx:id="technologTable" editable="true" prefHeight="476.0" prefWidth="350.0" tableMenuButtonVisible="true" />
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+        <items>
+              <TableView fx:id="techMaterialTable" editable="true" prefHeight="476.0" prefWidth="350.0" tableMenuButtonVisible="true" />
+            <TableView editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" />
+        </items>
+      </SplitPane>
     </SplitPane>
     <HBox alignment="TOP_RIGHT" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
         <VBox.margin>

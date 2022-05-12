@@ -12,6 +12,7 @@ module by.furniture.technologdata {
     opens by.furniture.technologdata to javafx.fxml;
     exports by.furniture.technologdata.classes;
     exports by.furniture.technologdata.classes.techClasses;
+    exports by.furniture.technologdata.classes.configuration;
     exports by.furniture.technologdata.interfaces;
     opens by.furniture.technologdata.interfaces to javafx.fxml;
     exports by.furniture.technologdata.controllers;

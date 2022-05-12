@@ -1,7 +1,7 @@
 package by.furniture.technologdata.controllers;
 
-import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.*;
+import by.furniture.technologdata.classes.techClasses.TechMaterialData;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,15 +25,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
+
+import static by.furniture.technologdata.StartPointLauncher.*;
 
 public class MainFrameController implements BazisXMLTags {
 
     public static ArrayList<Panel> panels = new ArrayList<>();
     private final TreeSet<String> mainMaterials = new TreeSet<>();
-    private final ArrayList<TechnologData> technologDataArrayList = new ArrayList<>();
+    private final ArrayList<TechMaterialData> techMaterialDataArrayList = new ArrayList<>();
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
 
@@ -52,7 +56,7 @@ public class MainFrameController implements BazisXMLTags {
     @FXML
     private VBox materialCheckList;
     @FXML
-    private TableView<TechnologData> technologTable;
+    private TableView<TechMaterialData> techMaterialTable;
 
     @FXML
     void onExitClick() {
@@ -74,7 +78,7 @@ public class MainFrameController implements BazisXMLTags {
                 DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 Document document = documentBuilder.parse(selectedFile);
                 Node root = document.getDocumentElement();
-                arrayNodes = StartPointLauncher.getTagArray(root, new ArrayList<>());
+                arrayNodes = getTagArray(root, new ArrayList<>());
                 for (Node node : arrayNodes) {
                     if (node.getNodeType() != Node.TEXT_NODE && node.getNodeName().equals(BazisXMLTags.PRODUCT)) {
                         NodeList productNodeList = node.getChildNodes();
@@ -133,7 +137,7 @@ public class MainFrameController implements BazisXMLTags {
                     }
                 }
                 for (Node panelNode : panelNodes) {
-                    panels.add(StartPointLauncher.NodeToPanel(panelNode));
+                    panels.add(NodeToPanel(panelNode));
                 }
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 e.printStackTrace();
@@ -157,7 +161,7 @@ public class MainFrameController implements BazisXMLTags {
                 materialCheckList.getChildren().add(chk);
             }
             setDataToArrayList(panels);
-            setTable(technologDataArrayList);
+            setTable(techMaterialDataArrayList);
         }
     }
 
@@ -181,13 +185,13 @@ public class MainFrameController implements BazisXMLTags {
         productArticleRow.createCell(1).setCellValue(product.getArticle());
 
         HSSFRow titleRow = hssfSheet.createRow(4);
-        for (int i = 0; i < technologTable.getColumns().size(); i++) {
-            titleRow.createCell(i).setCellValue(technologTable.getColumns().get(i).getText());
+        for (int i = 0; i < techMaterialTable.getColumns().size(); i++) {
+            titleRow.createCell(i).setCellValue(techMaterialTable.getColumns().get(i).getText());
         }
-        for (int r = 0; r < technologTable.getItems().size(); r++) {
+        for (int r = 0; r < techMaterialTable.getItems().size(); r++) {
             HSSFRow hssfRow = hssfSheet.createRow(5 + r);
-            for (int c = 0; c < technologTable.getColumns().size(); c++) {
-                Object cellValue = technologTable.getColumns().get(c).getCellObservableValue(r).getValue();
+            for (int c = 0; c < techMaterialTable.getColumns().size(); c++) {
+                Object cellValue = techMaterialTable.getColumns().get(c).getCellObservableValue(r).getValue();
                 try {
                     if (cellValue != null && Float.parseFloat((cellValue.toString())) != 0.0f) {
                         hssfRow.createCell(c).setCellValue(Float.parseFloat(cellValue.toString()));
@@ -208,14 +212,14 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
-        technologDataArrayList.clear();
-        technologDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
-        technologDataArrayList.addAll(overallEdgeLength(panelArrayList));
+        techMaterialDataArrayList.clear();
+        techMaterialDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
+        //techMaterialDataArrayList.addAll(overallEdgeLength(panelArrayList));
     }
 
     void resetTableData(ArrayList<Panel> panels) {
         setDataToArrayList(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes));
-        setTable(technologDataArrayList);
+        setTable(techMaterialDataArrayList);
     }
 
     //----------------------Проверка чекбоксов------------------
@@ -260,8 +264,8 @@ public class MainFrameController implements BazisXMLTags {
         return edgeData;
     }
 
-    public ArrayList<TechnologData> overallSquareOfMaterials(ArrayList<Panel> panelArrayList) {
-        ArrayList<TechnologData> materialsSquareData = new ArrayList<>();
+    public ArrayList<TechMaterialData> overallSquareOfMaterials(ArrayList<Panel> panelArrayList) {
+        ArrayList<TechMaterialData> materialsSquareData = new ArrayList<>();
         ArrayList<FacingSurface> facingSurfacesList = new ArrayList<>();
         TreeSet<String> mainMaterialNames = new TreeSet<>();
         TreeSet<String> facingSurfaceNames = new TreeSet<>();
@@ -300,36 +304,52 @@ public class MainFrameController implements BazisXMLTags {
         }
         mainMaterialNames.addAll(facingSurfaceNames);
         for (String str : mainMaterialNames) {
-            if (facingSurfaceSquareMap.get(str) != null) {
-                materialsSquareData.add(new TechnologData("Площадь деталей " + str,
-                        String.format("%.2f", ((mainMaterialSquareMap.get(str) == null ? 0 : mainMaterialSquareMap.get(str)) + facingSurfaceSquareMap.get(str))), "кв.м"));
-            } else {
-                materialsSquareData.add(new TechnologData("Площадь деталей " + str, String.format("%.2f", mainMaterialSquareMap.get(str)), "кв.м"));
+            if (materialDBList.containsKey(str)) {
+                String format = String.format("%.0f", materialDBList.get(str).getListFormat().get(0)[0]) + "x" + String.format("%.0f", materialDBList.get(str).getListFormat().get(0)[1]);
+                if (facingSurfaceSquareMap.get(str) != null) {
+                    float squareInList = (mainMaterialSquareMap.get(str) == null ? 0 : mainMaterialSquareMap.get(str)) + facingSurfaceSquareMap.get(str);
+                    squareInList = (squareInList * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(0);
+                    BigDecimal square = new BigDecimal(squareInList);
+                    materialsSquareData.add(new TechMaterialData(str, String.format("%.0f", materialDBList.get(str).getListThickness()), format, "лист", square.setScale(0, RoundingMode.CEILING).toString()));
+                } else {
+                    float squareInList = (mainMaterialSquareMap.get(str) * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(0);
+                    BigDecimal square = new BigDecimal(squareInList);
+                    materialsSquareData.add(new TechMaterialData(str, String.format("%.0f", materialDBList.get(str).getListThickness()), format, "лист", square.setScale(0, RoundingMode.CEILING).toString()));
+                }
             }
         }
         return materialsSquareData;
     }
 
     //----------------------Вывод в таблицу---------------------
-    void setTable(ArrayList<TechnologData> techDataList) {
-        technologTable.getColumns().clear();
-        technologTable.setItems(FXCollections.observableArrayList(techDataList));
-
-        TableColumn<TechnologData, String> nameColumn = new TableColumn<>("Наименование");
+    void setTable(ArrayList<TechMaterialData> techDataList) {
+        techMaterialTable.getColumns().clear();
+        techMaterialTable.setItems(FXCollections.observableArrayList(techDataList));
+        TableColumn<TechMaterialData, String> nameColumn = new TableColumn<>("Наименование");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
-        nameColumn.prefWidthProperty().setValue(400);
+        //nameColumn.prefWidthProperty().setValue(400);
         nameColumn.setEditable(true);
-        technologTable.getColumns().add(nameColumn);
-        TableColumn<TechnologData, String> amountColumn = new TableColumn<>("Кол-во");
-        amountColumn.editableProperty().setValue(true);
-        amountColumn.setStyle("-fx-alignment: CENTER-RIGHT;");
-        amountColumn.setCellValueFactory(new PropertyValueFactory<>("Amount"));
-        technologTable.getColumns().add(amountColumn);
-        TableColumn<TechnologData, String> unitColumn = new TableColumn<>("Ед. изм.");
+        techMaterialTable.getColumns().add(nameColumn);
+        TableColumn<TechMaterialData, String> thicknessColumn = new TableColumn<>("Толщина");
+        thicknessColumn.editableProperty().setValue(true);
+        thicknessColumn.setStyle("-fx-alignment: CENTER;");
+        thicknessColumn.setCellValueFactory(new PropertyValueFactory<>("thickness"));
+        techMaterialTable.getColumns().add(thicknessColumn);
+        TableColumn<TechMaterialData, String> formatColumn = new TableColumn<>("Формат листа");
+        formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
+        formatColumn.setEditable(true);
+        formatColumn.setStyle("-fx-alignment: CENTER;");
+        techMaterialTable.getColumns().add(formatColumn);
+        TableColumn<TechMaterialData, String> unitColumn = new TableColumn<>("Ед. изм.");
         unitColumn.setCellValueFactory(new PropertyValueFactory<>("Unit"));
         unitColumn.setEditable(true);
         unitColumn.setStyle("-fx-alignment: CENTER;");
-        technologTable.getColumns().add(unitColumn);
+        techMaterialTable.getColumns().add(unitColumn);
+        TableColumn<TechMaterialData, String> amountColumn = new TableColumn<>("Кол-во");
+        amountColumn.editableProperty().setValue(true);
+        amountColumn.setStyle("-fx-alignment: CENTER;");
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("Amount"));
+        techMaterialTable.getColumns().add(amountColumn);
     }
 
     /*public ArrayList<PanelsByMaterial> getPanelsByMaterial(ArrayList<Panel> allPanels) {
