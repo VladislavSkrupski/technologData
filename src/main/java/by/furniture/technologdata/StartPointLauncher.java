@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -43,6 +44,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         Scene scene = new Scene(root);
         mainStage.setScene(scene);
         mainStage.setTitle("черновая оценка заказа");
+        mainStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("logo238x238.png"))));
         materialDBList.putAll(getMaterialDBList());
         mainStage.show();
     }
@@ -1048,8 +1050,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
     }
 
     /**
-     * Загружает базу материалов из файда MaterialDB.xls
-     *
+     * Загружает базу материалов из файла MaterialDB.xls
      * @return возвращает HashMap объектов MaterialDB с ключами из наименования материала
      */
     private static HashMap<String, MaterialDB> getMaterialDBList() {
@@ -1086,6 +1087,4 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         return materialDBS;
     }
-
 }
-

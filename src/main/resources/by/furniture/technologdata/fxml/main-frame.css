@@ -1,0 +1,9 @@
+.header-menu-file {
+    -fx-pref-width: 100px;
+    -fx-font-size: 14px;
+}
+
+.header-menu-config {
+    -fx-pref-width: 190px;
+    -fx-font-size: 14px;
+}

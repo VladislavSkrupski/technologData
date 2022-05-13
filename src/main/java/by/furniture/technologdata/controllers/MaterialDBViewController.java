@@ -31,7 +31,7 @@ public class MaterialDBViewController {
     @FXML
     private TableView<MaterialDB> materialDBTableView;
 
-    @FXML
+      @FXML
     void onCancelButtonClick() {
         materialDBViewStage.close();
     }

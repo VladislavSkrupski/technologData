@@ -2,6 +2,7 @@ package by.furniture.technologdata.controllers;
 
 import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.*;
+import by.furniture.technologdata.classes.techClasses.TechEdgeData;
 import by.furniture.technologdata.classes.techClasses.TechMaterialData;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Platform;
@@ -44,6 +45,7 @@ public class MainFrameController implements BazisXMLTags {
     public static ArrayList<Panel> panels = new ArrayList<>();
     private final TreeSet<String> mainMaterials = new TreeSet<>();
     private final ArrayList<TechMaterialData> techMaterialDataArrayList = new ArrayList<>();
+    private final ArrayList<TechEdgeData> techEdgeDataArrayList = new ArrayList<>();
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
 
@@ -51,6 +53,8 @@ public class MainFrameController implements BazisXMLTags {
     private MenuItem openFile;
     @FXML
     private MenuItem dataBaseMenuItem;
+    @FXML
+    private Label fullEdgeLengthLabel;
     @FXML
     private Button exportButton;
     @FXML
@@ -65,6 +69,8 @@ public class MainFrameController implements BazisXMLTags {
     private VBox materialCheckList;
     @FXML
     private TableView<TechMaterialData> techMaterialTable;
+    @FXML
+    private TableView<TechEdgeData> techEdgeTable;
 
     @FXML
     void onExitClick() {
@@ -169,11 +175,13 @@ public class MainFrameController implements BazisXMLTags {
                 materialCheckList.getChildren().add(chk);
             }
             setDataToArrayList(panels);
-            setTable(techMaterialDataArrayList);
+            setMaterialTable(techMaterialDataArrayList);
             exportButton.setDisable(false);
             materialDBList.forEach((k, v) -> {
                 v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels));
             });
+            setEdgeTable(techEdgeDataArrayList);
+
         }
     }
 
@@ -248,12 +256,14 @@ public class MainFrameController implements BazisXMLTags {
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
         techMaterialDataArrayList.clear();
         techMaterialDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
-        //techMaterialDataArrayList.addAll(overallEdgeLength(panelArrayList));
+        techEdgeDataArrayList.clear();
+        techEdgeDataArrayList.addAll(overallEdgeLength(panelArrayList));
     }
 
     void resetTableData(ArrayList<Panel> panels) {
         setDataToArrayList(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes));
-        setTable(techMaterialDataArrayList);
+        setMaterialTable(techMaterialDataArrayList);
+        setEdgeTable(techEdgeDataArrayList);
     }
 
     //----------------------Проверка чекбоксов------------------
@@ -272,29 +282,42 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     //----------------------Конечные данные---------------------
-    public ArrayList<TechnologData> overallEdgeLength(ArrayList<Panel> panelArrayList) {
-        ArrayList<TechnologData> edgeData = new ArrayList<>();
-        HashMap<String, Float> edgesMap = new HashMap<>();
+    public ArrayList<TechEdgeData> overallEdgeLength(ArrayList<Panel> panelArrayList) {
+        ArrayList<TechEdgeData> edgeData = new ArrayList<>();
+        HashMap<String, TechEdgeData> edgesMap = new HashMap<>();
         float fullLength = 0.0f;
         for (Panel panel : panelArrayList) {
             for (int a = 0; a < panel.getEdgeLists().size(); a++) {
                 if (panel.getEdgeLists().get(a).size() > 0) {
                     panel.getEdgeLists().get(a).forEach(edge -> {
                         if (edgesMap.containsKey(edge.getNomination())) {
-                            edgesMap.replace(edge.getNomination(), (edgesMap.get(edge.getNomination()) + edge.getLength() * panel.getAmount()));
+                            float tempLength = edgesMap.get(edge.getNomination()).getLength() + edge.getLength() * panel.getAmount();
+                            edgesMap.get(edge.getNomination()).setLength(tempLength);
                         } else {
-                            edgesMap.put(edge.getNomination(), edge.getLength() * panel.getAmount());
+                            edgesMap.put(edge.getNomination(), new TechEdgeData(
+                                    edge.getCode(),
+                                    edge.getNomination(),
+                                    edge.getDesignation(),
+                                    edge.getLength() * panel.getAmount(),
+                                    edge.getWidth(),
+                                    edge.getThickness())
+                            );
                         }
                     });
                 }
             }
         }
-        edgesMap.forEach((s, aFloat) -> edgeData.add(new TechnologData(s, String.format("%.1f", aFloat / 1000), "м")));
-        ArrayList<Float> values = new ArrayList<>(edgesMap.values());
-        for (Float value : values) {
-            fullLength += value;
+        // Сумма чистой кромки
+        for (TechEdgeData techEdgeData : edgesMap.values()) {
+            fullLength += techEdgeData.getLength();
         }
-        edgeData.add(new TechnologData("Общий метраж кромки", String.format("%.1f", fullLength / 1000), "м"));
+        // Увеличение длины кромки на коэффициент
+        edgesMap.forEach((k, v) -> {
+            v.setLength((v.getLength() * configurationProperties.getEdgeCoefficient()) / 1000);
+            edgeData.add(v);
+        });
+        fullEdgeLengthLabel.setText("Общий метраж кромки - " + String.format("%.0f", fullLength / 1000) + " м");
+        fullEdgeLengthLabel.setStyle("-fx-font-size: 14px;");
         return edgeData;
     }
 
@@ -368,7 +391,7 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     //----------------------Вывод в таблицу---------------------
-    void setTable(ArrayList<TechMaterialData> techDataList) {
+    void setMaterialTable(ArrayList<TechMaterialData> techDataList) {
         techMaterialTable.getColumns().clear();
         techMaterialTable.setItems(FXCollections.observableArrayList(techDataList));
         TableColumn<TechMaterialData, String> nameColumn = new TableColumn<>("Наименование");
@@ -396,6 +419,30 @@ public class MainFrameController implements BazisXMLTags {
         amountColumn.setStyle("-fx-alignment: CENTER;");
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("Amount"));
         techMaterialTable.getColumns().add(amountColumn);
+    }
+
+    void setEdgeTable(ArrayList<TechEdgeData> techDataList) {
+        techEdgeTable.getColumns().clear();
+        techEdgeTable.setItems(FXCollections.observableArrayList(techDataList));
+        TableColumn<TechEdgeData, String> nameColumn = new TableColumn<>("Наименование");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("nameCheckBox"));
+        nameColumn.setEditable(true);
+        techEdgeTable.getColumns().add(nameColumn);
+        TableColumn<TechEdgeData, String> formatColumn = new TableColumn<>("Формат");
+        formatColumn.editableProperty().setValue(true);
+        formatColumn.setStyle("-fx-alignment: CENTER;");
+        formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
+        techEdgeTable.getColumns().add(formatColumn);
+        TableColumn<TechEdgeData, String> unitColumn = new TableColumn<>("Ед. изм.");
+        unitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
+        unitColumn.setEditable(true);
+        unitColumn.setStyle("-fx-alignment: CENTER;");
+        techEdgeTable.getColumns().add(unitColumn);
+        TableColumn<TechEdgeData, String> lengthColumn = new TableColumn<>("Кол-во");
+        lengthColumn.editableProperty().setValue(true);
+        lengthColumn.setStyle("-fx-alignment: CENTER;");
+        lengthColumn.setCellValueFactory(new PropertyValueFactory<>("length"));
+        techEdgeTable.getColumns().add(lengthColumn);
     }
 
     /*public ArrayList<PanelsByMaterial> getPanelsByMaterial(ArrayList<Panel> allPanels) {
