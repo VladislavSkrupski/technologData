@@ -45,10 +45,10 @@
         </Menu>
       <Menu style="-fx-alignment: CENTER; -fx-font-size: 14px" text="Настройки">
         <items>
-            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Параметры" />
-            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="База плитных материалов" />
-            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Сохранить настройки" />
-            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 100px; -fx-font-size: 14px" text="Восстановить настройки" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 150px; -fx-font-size: 14px" text="Параметры" />
+            <MenuItem fx:id="dataBaseMenuItem" onAction="#onDataBaseMenuItemClick" mnemonicParsing="false" style="-fx-pref-width: 150px; -fx-font-size: 14px" text="База плитных материалов" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 150px; -fx-font-size: 14px" text="Сохранить настройки" />
+            <MenuItem mnemonicParsing="false" style="-fx-pref-width: 150px; -fx-font-size: 14px" text="Восстановить настройки" />
         </items>
       </Menu>
     </MenuBar>

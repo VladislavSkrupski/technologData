@@ -1,16 +1,21 @@
 package by.furniture.technologdata.controllers;
 
+import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.*;
 import by.furniture.technologdata.classes.techClasses.TechMaterialData;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.TreeSet;
 
 import static by.furniture.technologdata.StartPointLauncher.*;
@@ -43,6 +49,8 @@ public class MainFrameController implements BazisXMLTags {
 
     @FXML
     private MenuItem openFile;
+    @FXML
+    private MenuItem dataBaseMenuItem;
     @FXML
     private Button exportButton;
     @FXML
@@ -162,6 +170,10 @@ public class MainFrameController implements BazisXMLTags {
             }
             setDataToArrayList(panels);
             setTable(techMaterialDataArrayList);
+            exportButton.setDisable(false);
+            materialDBList.forEach((k, v) -> {
+                v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels));
+            });
         }
     }
 
@@ -209,6 +221,28 @@ public class MainFrameController implements BazisXMLTags {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @FXML
+    void onDataBaseMenuItemClick() {
+        FXMLLoader materialDBViewLoader = new FXMLLoader();
+        try {
+            materialDBViewLoader.setLocation(StartPointLauncher.class.getResource("fxml/materialDBView.fxml"));
+            VBox frame = materialDBViewLoader.load();
+            Stage materialDBViewStage = new Stage();
+            materialDBViewStage.setTitle("База плитных материалов");
+            materialDBViewStage.initModality(Modality.WINDOW_MODAL);
+            materialDBViewStage.initOwner(getMainStage());
+            Scene materialDBViewScene = new Scene(Objects.requireNonNull(frame));
+            materialDBViewStage.setScene(materialDBViewScene);
+            MaterialDBViewController controller = materialDBViewLoader.getController();
+            controller.setMaterialDBViewStage(materialDBViewStage);
+            materialDBViewStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
@@ -305,16 +339,28 @@ public class MainFrameController implements BazisXMLTags {
         mainMaterialNames.addAll(facingSurfaceNames);
         for (String str : mainMaterialNames) {
             if (materialDBList.containsKey(str)) {
-                String format = String.format("%.0f", materialDBList.get(str).getListFormat().get(0)[0]) + "x" + String.format("%.0f", materialDBList.get(str).getListFormat().get(0)[1]);
+                String format = materialDBList.get(str).getFormatChoiceBox().getValue();
                 if (facingSurfaceSquareMap.get(str) != null) {
                     float squareInList = (mainMaterialSquareMap.get(str) == null ? 0 : mainMaterialSquareMap.get(str)) + facingSurfaceSquareMap.get(str);
-                    squareInList = (squareInList * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(0);
+                    squareInList = (squareInList * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
                     BigDecimal square = new BigDecimal(squareInList);
-                    materialsSquareData.add(new TechMaterialData(str, String.format("%.0f", materialDBList.get(str).getListThickness()), format, "лист", square.setScale(0, RoundingMode.CEILING).toString()));
+                    materialsSquareData.add(new TechMaterialData(
+                            str,
+                            String.format("%.0f", materialDBList.get(str).getListThickness()),
+                            materialDBList.get(str).getBoardFormatsMap(),
+                            materialDBList.get(str).getFormatChoiceBox(),
+                            "лист",
+                            square.setScale(0, RoundingMode.CEILING).toString()));
                 } else {
-                    float squareInList = (mainMaterialSquareMap.get(str) * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(0);
+                    float squareInList = (mainMaterialSquareMap.get(str) * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
                     BigDecimal square = new BigDecimal(squareInList);
-                    materialsSquareData.add(new TechMaterialData(str, String.format("%.0f", materialDBList.get(str).getListThickness()), format, "лист", square.setScale(0, RoundingMode.CEILING).toString()));
+                    materialsSquareData.add(new TechMaterialData(
+                            str,
+                            String.format("%.0f", materialDBList.get(str).getListThickness()),
+                            materialDBList.get(str).getBoardFormatsMap(),
+                            materialDBList.get(str).getFormatChoiceBox(),
+                            "лист",
+                            square.setScale(0, RoundingMode.CEILING).toString()));
                 }
             }
         }
@@ -326,7 +372,7 @@ public class MainFrameController implements BazisXMLTags {
         techMaterialTable.getColumns().clear();
         techMaterialTable.setItems(FXCollections.observableArrayList(techDataList));
         TableColumn<TechMaterialData, String> nameColumn = new TableColumn<>("Наименование");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("materialNameCheckBox"));
         //nameColumn.prefWidthProperty().setValue(400);
         nameColumn.setEditable(true);
         techMaterialTable.getColumns().add(nameColumn);
@@ -336,7 +382,7 @@ public class MainFrameController implements BazisXMLTags {
         thicknessColumn.setCellValueFactory(new PropertyValueFactory<>("thickness"));
         techMaterialTable.getColumns().add(thicknessColumn);
         TableColumn<TechMaterialData, String> formatColumn = new TableColumn<>("Формат листа");
-        formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
+        formatColumn.setCellValueFactory(new PropertyValueFactory<>("formatChoiceBox"));
         formatColumn.setEditable(true);
         formatColumn.setStyle("-fx-alignment: CENTER;");
         techMaterialTable.getColumns().add(formatColumn);

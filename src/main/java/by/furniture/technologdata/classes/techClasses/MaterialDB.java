@@ -1,18 +1,38 @@
 package by.furniture.technologdata.classes.techClasses;
 
-import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ChoiceBox;
+
+import java.util.HashMap;
 
 public class MaterialDB {
     private String article;
     private String name;
-    private ArrayList<Float[]> listFormat = new ArrayList<>();
+    private HashMap<String, Float[]> boardFormatsMap = new HashMap<>();
+    private ChoiceBox<String> formatChoiceBox;
     private float listThickness;
 
     public MaterialDB(String article, String name, float listLength, float listWidth, float listThickness) {
         this.article = article;
         this.name = name;
-        this.listFormat.add(new Float[]{listLength, listWidth});
+        String formatStr = String.format("%.0f", listLength) + "х" + String.format("%.0f", listWidth);
+        this.boardFormatsMap.put(formatStr, new Float[]{listLength, listWidth});
         this.listThickness = listThickness;
+    }
+
+    public void setFormatChoiceBox() {
+        ObservableList<String> observableFormatList = FXCollections.observableList(this.boardFormatsMap.keySet().stream().toList());
+        if (formatChoiceBox == null) {
+            this.formatChoiceBox = new ChoiceBox<>(observableFormatList);
+        } else {
+            this.formatChoiceBox.setItems(observableFormatList);
+        }
+        this.formatChoiceBox.setValue(observableFormatList.stream().findFirst().get());
+    }
+
+    public ChoiceBox<String> getFormatChoiceBox() {
+        return formatChoiceBox;
     }
 
     public String getArticle() {
@@ -31,12 +51,17 @@ public class MaterialDB {
         this.name = name;
     }
 
-    public ArrayList<Float[]> getListFormat() {
-        return listFormat;
+    public HashMap<String, Float[]> getBoardFormatsMap() {
+        return boardFormatsMap;
     }
 
-    public void setListFormat(ArrayList<Float[]> listFormat) {
-        this.listFormat = listFormat;
+    public void setListFormat(HashMap<String, Float[]> boardFormatsMap) {
+        this.boardFormatsMap.putAll(boardFormatsMap);
+    }
+
+    public void setListFormat(float listLength, float listWidth) {
+        String formatStr = String.format("%.0f", listLength) + "х" + String.format("%.0f", listWidth);
+        this.boardFormatsMap.put(formatStr, new Float[]{listLength, listWidth});
     }
 
     public float getListThickness() {
@@ -49,18 +74,13 @@ public class MaterialDB {
 
     @Override
     public String toString() {
-        return "MaterialDB{" +
-                "article='" + article + '\'' +
-                ", name='" + name + '\'' +
-                ", listFormat=" + listFormat +
-                ", listThickness=" + listThickness +
-                '}';
+        return "MaterialDB{" + "article='" + article + '\'' + ", name='" + name + '\'' + ", listFormatsMap=" + boardFormatsMap + ", listThickness=" + listThickness + '}';
     }
 
-    public float listSquare(int listFormatItemNum) {
+    public float listSquare(String BoardFormatStr) {
         float square = 0f;
         try {
-            square = (this.listFormat.get(listFormatItemNum)[0] * this.listFormat.get(listFormatItemNum)[1]) / 1000000;
+            square = (this.boardFormatsMap.get(BoardFormatStr)[0] * this.boardFormatsMap.get(BoardFormatStr)[1]) / 1000000;
         } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
             return 0f;

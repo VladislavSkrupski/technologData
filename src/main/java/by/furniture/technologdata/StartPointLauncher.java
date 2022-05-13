@@ -14,14 +14,10 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.poifs.filesystem.POIFSStream;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1076,7 +1072,13 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                         (float) listWidthCell.getNumericCellValue(),
                         (float) listThicknessCell.getNumericCellValue()
                 );
-                materialDBS.put(materialDB.getName(), materialDB);
+                if (materialDBS.containsKey(materialDB.getName())) {
+                    materialDBS.get(materialDB.getName()).setListFormat(materialDB.getBoardFormatsMap());
+                } else {
+                    materialDBS.put(materialDB.getName(), materialDB);
+                }
+                materialDBS.get(materialDB.getName()).setFormatChoiceBox();
+                materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {});
             }
         } catch (IOException e) {
             e.printStackTrace();

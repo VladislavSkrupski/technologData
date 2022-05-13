@@ -1,18 +1,32 @@
 package by.furniture.technologdata.classes.techClasses;
 
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+
+import java.util.HashMap;
+
 public class TechMaterialData {
+    private final CheckBox materialNameCheckBox;
+    private final ChoiceBox<String> formatChoiceBox;
     private String name;
     private String thickness;
-    private String format;
+    private HashMap<String, Float[]> format;
     private String unit;
     private String amount;
 
-    public TechMaterialData(String name, String thickness, String format, String unit, String amount) {
+    public TechMaterialData(String name, String thickness, HashMap<String, Float[]> format, ChoiceBox<String> formatChoiceBox, String unit, String amount) {
         this.name = name;
+        this.materialNameCheckBox = new CheckBox(this.name);
+        this.materialNameCheckBox.setSelected(true);
         this.thickness = thickness;
         this.format = format;
+        this.formatChoiceBox = formatChoiceBox;
         this.unit = unit;
         this.amount = amount;
+    }
+
+    public CheckBox getMaterialNameCheckBox() {
+        return materialNameCheckBox;
     }
 
     public String getName() {
@@ -31,11 +45,15 @@ public class TechMaterialData {
         this.thickness = thickness;
     }
 
-    public String getFormat() {
+    public ChoiceBox<String> getFormatChoiceBox() {
+        return formatChoiceBox;
+    }
+
+    public HashMap<String, Float[]> getFormat() {
         return format;
     }
 
-    public void setFormat(String format) {
+    public void setFormat(HashMap<String, Float[]> format) {
         this.format = format;
     }
 
