@@ -2,12 +2,16 @@ package by.furniture.technologdata.classes.techClasses;
 
 import javafx.scene.control.CheckBox;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class TechEdgeData {
     private String article;
     private String name;
     private CheckBox nameCheckBox;
     private String designation;
     private Float length;
+    private String orderWholeLength;
     private Float width;
     private Float thickness;
     private final String unit = "м";
@@ -22,7 +26,7 @@ public class TechEdgeData {
         this.length = length;
         this.width = width;
         this.thickness = thickness;
-        this.format = String.format("%.1f", this.thickness) + "/" + String.format("%.0f", this.width);
+        this.format = String.format(this.thickness % 1 != 0 ? "%.1f" : "%.0f", this.thickness) + "/" + String.format("%.0f", this.width);
     }
 
     public String getArticle() {
@@ -91,6 +95,19 @@ public class TechEdgeData {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public String getOrderWholeLength() {
+        return orderWholeLength;
+    }
+
+    public void setOrderWholeLength() {
+        BigDecimal roundedLength = new BigDecimal(this.length);
+        this.orderWholeLength = roundedLength.setScale(0, RoundingMode.CEILING).toString();
+    }
+
+    public void setOrderWholeLength(String orderWholeLength) {
+        this.orderWholeLength = orderWholeLength;
     }
 
     @Override
