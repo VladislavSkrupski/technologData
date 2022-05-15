@@ -10,39 +10,29 @@
          <VBox.margin>
             <Insets />
          </VBox.margin>
-         <Button fx:id="editInExcelButton" onAction="#onEditInExcelButtonClick" mnemonicParsing="false" text="Редактировать в EXCEL">
+         <Button fx:id="editInExcelButton" mnemonicParsing="false" onAction="#onEditInExcelButtonClick" text="Редактировать в EXCEL">
             <HBox.margin>
                <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
             </HBox.margin>
          </Button>
-         <Button minWidth="75.0" mnemonicParsing="false" prefWidth="75.0" text="Добавить">
+         <Button fx:id="addButton" onAction="#onShowAddForm" mnemonicParsing="false" text="Добавить">
             <HBox.margin>
-               <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
-            </HBox.margin>
-            <padding>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </padding>
-         </Button>
-         <Button minWidth="75.0" mnemonicParsing="false" prefWidth="75.0" text="Изменить">
-            <HBox.margin>
-               <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
-            </HBox.margin>
-         </Button>
-         <Button minWidth="75.0" mnemonicParsing="false" prefWidth="75.0" text="Удалить">
-            <HBox.margin>
-               <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
+               <Insets bottom="5.0" right="10.0" top="10.0" />
             </HBox.margin>
          </Button>
       </HBox>
-      <TextField promptText="Фильтр по наименованию">
+      <TextField promptText="Фильтр по наименованию" visible="false">
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
          </VBox.margin>
       </TextField>
-      <TableView fx:id="materialDBTableView" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS" />
+      <TableView fx:id="materialDBTableView" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin></TableView>
       <HBox alignment="CENTER_RIGHT" maxHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <Button minWidth="75.0" mnemonicParsing="false" text="OK">
+            <Button minWidth="75.0" mnemonicParsing="false" text="OK" onAction="#onCancelButtonClick">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>

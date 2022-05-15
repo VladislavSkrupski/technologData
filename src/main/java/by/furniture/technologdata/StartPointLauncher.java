@@ -62,6 +62,10 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         launch();
     }
 
+    public static void refreshMaterialDB() {
+        materialDBList.putAll(getMaterialDBList());
+    }
+
     /**
      * Метод для получения объекта панели из XML-спецификации
      *

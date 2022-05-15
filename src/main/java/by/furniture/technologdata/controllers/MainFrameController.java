@@ -38,10 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.TreeSet;
+import java.util.*;
 
 import static by.furniture.technologdata.StartPointLauncher.*;
 
@@ -53,6 +50,7 @@ public class MainFrameController implements BazisXMLTags {
     private final ArrayList<TechEdgeData> techEdgeDataArrayList = new ArrayList<>();
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
+
 
     @FXML
     private MenuItem openFile;
@@ -184,7 +182,6 @@ public class MainFrameController implements BazisXMLTags {
             exportButton.setDisable(false);
             materialDBList.forEach((k, v) -> v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels)));
             setEdgeTable(techEdgeDataArrayList);
-
         }
     }
 
@@ -192,7 +189,7 @@ public class MainFrameController implements BazisXMLTags {
     void onExportToXLS() {
         int rowTempPoint = 0;
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName(product.getNomination()+"-черновой");
+        fileChooser.setInitialFileName(product.getNomination() + "-черновой");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Файл EXCEL", "*.xls"));
         File file = fileChooser.showSaveDialog(exportButton.getParent().getScene().getWindow());
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
@@ -382,11 +379,53 @@ public class MainFrameController implements BazisXMLTags {
 
     }
 
+    public static void showAddMaterialDBForm(String str) {
+        FXMLLoader addMaterialDBLoader = new FXMLLoader();
+        try {
+            addMaterialDBLoader.setLocation(StartPointLauncher.class.getResource("fxml/addMaterialDB.fxml"));
+            VBox frame = addMaterialDBLoader.load();
+            Stage addMaterialDBStage = new Stage();
+            addMaterialDBStage.setTitle("База плитных материалов");
+            addMaterialDBStage.initModality(Modality.WINDOW_MODAL);
+            addMaterialDBStage.initOwner(getMainStage());
+            Scene addMaterialDBScene = new Scene(Objects.requireNonNull(frame));
+            addMaterialDBStage.setScene(addMaterialDBScene);
+            AddMaterialDBController controller = addMaterialDBLoader.getController();
+            controller.setAddMaterialDBStage(addMaterialDBStage);
+            controller.getNameTextField().setText(str);
+            controller.getLengthField().textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    controller.getLengthField().setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+            controller.getWidthField().textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    controller.getWidthField().setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+            controller.getThicknessField().textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*\\.?\\d+")) {
+                    controller.getThicknessField().setText(newValue.replaceAll("[^\\d.]", ""));
+                }
+            });
+            addMaterialDBStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
         techMaterialDataArrayList.clear();
         techMaterialDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
         techEdgeDataArrayList.clear();
         techEdgeDataArrayList.addAll(overallEdgeLength(panelArrayList));
+    }
+
+    void showUnsupportedPanels(ArrayList<Panel> panelsArrayList) {
+        ArrayList<Panel> selectedPanels = panelsBySelectedMaterial(panelsArrayList, mainMaterialCheckBoxes);
+        for (Panel p : selectedPanels) {
+        }
     }
 
     void resetTableData(ArrayList<Panel> panels) {
@@ -471,6 +510,7 @@ public class MainFrameController implements BazisXMLTags {
                 }
             }
         }
+        // считаем площадь основных материалов
         for (String str : mainMaterialNames) {
             float square = 0.0f;
             for (Panel p : panelArrayList) {
@@ -480,6 +520,7 @@ public class MainFrameController implements BazisXMLTags {
             }
             mainMaterialSquareMap.put(str, square);
         }
+        // считаем площадь облицованных по пласти материалов
         for (String str : facingSurfaceNames) {
             float square = 0.0f;
             for (FacingSurface facingSurface : facingSurfacesList) {
@@ -489,7 +530,9 @@ public class MainFrameController implements BazisXMLTags {
             }
             facingSurfaceSquareMap.put(str, square);
         }
+        // объединяем наименования материалов, остаётся только список уникальных имён
         mainMaterialNames.addAll(facingSurfaceNames);
+        // получаем суммарные площади основных и облицованных материалов, пересчитываем в листы (с коэффициентом расхода)
         for (String str : mainMaterialNames) {
             if (materialDBList.containsKey(str)) {
                 String format = materialDBList.get(str).getFormatChoiceBox().getValue();
@@ -514,6 +557,18 @@ public class MainFrameController implements BazisXMLTags {
                             materialDBList.get(str).getFormatChoiceBox(),
                             "лист",
                             square.setScale(0, RoundingMode.CEILING).toString()));
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                ButtonType okButton = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
+                ButtonType cancelButton = new ButtonType("Игнорировать", ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.setTitle("Отсутствующий материал");
+                alert.setHeaderText(null);
+                alert.getButtonTypes().setAll(okButton, cancelButton);
+                alert.setContentText("В списке плитных материалов остутствует:\n" + str);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == okButton) {
+                    showAddMaterialDBForm(str);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package by.furniture.technologdata.controllers;
 
+
 import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.techClasses.MaterialDB;
 import javafx.collections.FXCollections;
@@ -12,13 +13,17 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.HashMap;
 
-import static by.furniture.technologdata.StartPointLauncher.materialDBList;
+import static by.furniture.technologdata.controllers.MainFrameController.showAddMaterialDBForm;
 
 public class MaterialDBViewController {
     private Stage materialDBViewStage;
 
+    private final HashMap<String, MaterialDB> materialDBS = new HashMap<>();
+
     public MaterialDBViewController() {
+        this.materialDBS.putAll(StartPointLauncher.materialDBList);
     }
 
     public Stage getMaterialDBViewStage() {
@@ -31,6 +36,9 @@ public class MaterialDBViewController {
 
     @FXML
     private Button cancelButton;
+
+    @FXML
+    private Button addButton;
 
     @FXML
     private Button editInExcelButton;
@@ -49,17 +57,25 @@ public class MaterialDBViewController {
     }
 
     @FXML
+    private void onShowAddForm() {
+        String str = "";
+        showAddMaterialDBForm(str);
+    }
+
+    @FXML
     private void onEditInExcelButtonClick() {
         StartPointLauncher startPointLauncher = StartPointLauncher.getStartPointLauncher();
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("materialDB file", "materialDB.xls"));
         File selectedFile = fileChooser.showOpenDialog(editInExcelButton.getScene().getWindow());
-        startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());
+        if (selectedFile != null) {
+            startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());
+        }
     }
 
     private void setMaterialDBTable() {
         materialDBTableView.getColumns().clear();
-        materialDBTableView.setItems(FXCollections.observableArrayList(materialDBList.values()));
+        materialDBTableView.setItems(FXCollections.observableArrayList(materialDBS.values()));
         TableColumn<MaterialDB, String> articleColumn = new TableColumn<>("Артикул");
         articleColumn.setCellValueFactory(new PropertyValueFactory<>("article"));
         materialDBTableView.getColumns().add(articleColumn);

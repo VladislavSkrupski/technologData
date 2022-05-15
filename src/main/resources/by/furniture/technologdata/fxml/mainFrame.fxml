@@ -50,10 +50,10 @@
                 <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px" text="Параметры"/>
                 <MenuItem fx:id="dataBaseMenuItem" mnemonicParsing="false" onAction="#onDataBaseMenuItemClick"
                           style="-fx-pref-width: 190px; -fx-font-size: 14px" text="База плитных материалов"/>
-                <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px"
-                          text="Сохранить настройки"/>
-                <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px"
-                          text="Восстановить настройки"/>
+                <!--                <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px"-->
+                <!--                          text="Сохранить настройки"/>-->
+                <!--                <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px"-->
+                <!--                          text="Восстановить настройки"/>-->
             </items>
         </Menu>
     </MenuBar>
