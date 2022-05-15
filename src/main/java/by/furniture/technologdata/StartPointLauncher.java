@@ -26,12 +26,21 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class StartPointLauncher extends Application implements BazisXMLTags {
+    private static StartPointLauncher startPointLauncher;
 
     private static Stage mainStage;
 
     public static final ConfigurationProperties configurationProperties = new ConfigurationProperties();
 
     public static final HashMap<String, MaterialDB> materialDBList = new HashMap<>();
+
+    public StartPointLauncher() {
+        startPointLauncher = this;
+    }
+
+    public static StartPointLauncher getStartPointLauncher() {
+        return startPointLauncher;
+    }
 
     public static Stage getMainStage() {
         return mainStage;
@@ -1051,6 +1060,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
 
     /**
      * Загружает базу материалов из файла MaterialDB.xls
+     *
      * @return возвращает HashMap объектов MaterialDB с ключами из наименования материала
      */
     private static HashMap<String, MaterialDB> getMaterialDBList() {
@@ -1079,7 +1089,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     materialDBS.put(materialDB.getName(), materialDB);
                 }
                 materialDBS.get(materialDB.getName()).setFormatChoiceBox();
-                materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {});
+                materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {
+                });
             }
         } catch (IOException e) {
             e.printStackTrace();

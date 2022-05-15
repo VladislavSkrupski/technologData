@@ -1,7 +1,9 @@
 package by.furniture.technologdata.controllers;
 
 import by.furniture.technologdata.StartPointLauncher;
-import by.furniture.technologdata.classes.*;
+import by.furniture.technologdata.classes.FacingSurface;
+import by.furniture.technologdata.classes.Panel;
+import by.furniture.technologdata.classes.Product;
 import by.furniture.technologdata.classes.techClasses.TechEdgeData;
 import by.furniture.technologdata.classes.techClasses.TechMaterialData;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
@@ -14,13 +16,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -178,9 +182,7 @@ public class MainFrameController implements BazisXMLTags {
             setDataToArrayList(panels);
             setMaterialTable(techMaterialDataArrayList);
             exportButton.setDisable(false);
-            materialDBList.forEach((k, v) -> {
-                v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels));
-            });
+            materialDBList.forEach((k, v) -> v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels)));
             setEdgeTable(techEdgeDataArrayList);
 
         }
@@ -190,11 +192,35 @@ public class MainFrameController implements BazisXMLTags {
     void onExportToXLS() {
         int rowTempPoint = 0;
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName(product.getNomination());
+        fileChooser.setInitialFileName(product.getNomination()+"-черновой");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Файл EXCEL", "*.xls"));
         File file = fileChooser.showSaveDialog(exportButton.getParent().getScene().getWindow());
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+        HSSFFont titleFont = hssfWorkbook.createFont();
+        titleFont.setBold(true);
+        titleFont.setColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());
+        titleFont.setFontHeightInPoints((short) 0x0A);
 
+        HSSFFont mainFont = hssfWorkbook.createFont();
+        mainFont.setFontHeightInPoints((short) 0x0B);
+
+        HSSFFont orderFont = hssfWorkbook.createFont();
+        orderFont.setFontHeightInPoints((short) 0x0A);
+        orderFont.setBold(true);
+
+        HSSFFont orderDataFont = hssfWorkbook.createFont();
+        orderDataFont.setFontHeightInPoints((short) 0x0A);
+
+        HSSFFont groupTitleFont = hssfWorkbook.createFont();
+        groupTitleFont.setColor(HSSFColor.HSSFColorPredefined.DARK_RED.getIndex());
+        groupTitleFont.setBold(true);
+        groupTitleFont.setFontHeightInPoints((short) 0x0A);
+
+        HSSFCellStyle orderCellStyle = hssfWorkbook.createCellStyle();
+        orderCellStyle.setFont(orderFont);
+
+        HSSFCellStyle orderDataCellStyle = hssfWorkbook.createCellStyle();
+        orderDataCellStyle.setFont(orderDataFont);
 
         HSSFCellStyle firstDataCellStyle = hssfWorkbook.createCellStyle();
         firstDataCellStyle.setBorderTop(BorderStyle.THIN);
@@ -202,7 +228,19 @@ public class MainFrameController implements BazisXMLTags {
         firstDataCellStyle.setBorderLeft(BorderStyle.THIN);
         firstDataCellStyle.setBorderRight(BorderStyle.THIN);
         firstDataCellStyle.setAlignment(HorizontalAlignment.LEFT);
+        firstDataCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        firstDataCellStyle.setFont(mainFont);
 
+        HSSFCellStyle titleCellStyle = hssfWorkbook.createCellStyle();
+        titleCellStyle.setBorderTop(BorderStyle.THIN);
+        titleCellStyle.setBorderBottom(BorderStyle.THIN);
+        titleCellStyle.setBorderLeft(BorderStyle.THIN);
+        titleCellStyle.setBorderRight(BorderStyle.THIN);
+        titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        firstDataCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        titleCellStyle.setFont(titleFont);
+        titleCellStyle.setFillForegroundColor((short) 0x08);
+        titleCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         HSSFCellStyle dataCellStyle = hssfWorkbook.createCellStyle();
         dataCellStyle.setBorderTop(BorderStyle.THIN);
@@ -210,25 +248,41 @@ public class MainFrameController implements BazisXMLTags {
         dataCellStyle.setBorderLeft(BorderStyle.THIN);
         dataCellStyle.setBorderRight(BorderStyle.THIN);
         dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        dataCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        dataCellStyle.setFont(mainFont);
 
+        HSSFCellStyle groupTitleStyle = hssfWorkbook.createCellStyle();
+        groupTitleStyle.setFont(groupTitleFont);
 
         HSSFSheet hssfSheet = hssfWorkbook.createSheet(product.getOrder().equals("") ? "лист 1" : product.getOrder());
 
+
         HSSFRow productOrderRow = hssfSheet.createRow(rowTempPoint++);
         productOrderRow.createCell(0).setCellValue("Заказ:");
+        productOrderRow.getCell(0).setCellStyle(orderCellStyle);
         productOrderRow.createCell(1).setCellValue(product.getOrder());
+        productOrderRow.getCell(1).setCellStyle(orderDataCellStyle);
+
         HSSFRow productNominationRow = hssfSheet.createRow(rowTempPoint++);
         productNominationRow.createCell(0).setCellValue("Наименование:");
+        productNominationRow.getCell(0).setCellStyle(orderCellStyle);
         productNominationRow.createCell(1).setCellValue(product.getNomination());
+        productNominationRow.getCell(1).setCellStyle(orderDataCellStyle);
+
         HSSFRow productArticleRow = hssfSheet.createRow(rowTempPoint++);
         productArticleRow.createCell(0).setCellValue("Артикул:");
+        productArticleRow.getCell(0).setCellStyle(orderCellStyle);
         productArticleRow.createCell(1).setCellValue(product.getArticle());
+        productArticleRow.getCell(1).setCellStyle(orderDataCellStyle);
+
         rowTempPoint++;
         HSSFRow boardRow = hssfSheet.createRow(rowTempPoint++);
         boardRow.createCell(0).setCellValue("Плитные материалы");
-        HSSFRow titleRow = hssfSheet.createRow(rowTempPoint++);
+        boardRow.getCell(0).setCellStyle(groupTitleStyle);
+        HSSFRow boardTitleRow = hssfSheet.createRow(rowTempPoint++);
         for (int i = 0; i < techMaterialTable.getColumns().size(); i++) {
-            titleRow.createCell(i).setCellValue(techMaterialTable.getColumns().get(i).getText());
+            boardTitleRow.createCell(i).setCellValue(techMaterialTable.getColumns().get(i).getText());
+            boardTitleRow.getCell(i).setCellStyle(titleCellStyle);
         }
         for (int rowItem = 0; rowItem < techMaterialTable.getItems().size(); rowItem++) {
             if (techMaterialTable.getItems().get(rowItem).getMaterialNameCheckBox().isSelected()) {
@@ -239,7 +293,7 @@ public class MainFrameController implements BazisXMLTags {
                         if (cellValue.getClass() == CheckBox.class) {
                             hssfRow.createCell(c).setCellValue(((CheckBox) cellValue).getText());
                         } else if (cellValue.getClass() == ChoiceBox.class) {
-                            hssfRow.createCell(c).setCellValue(((ChoiceBox<String>) cellValue).getValue());
+                            hssfRow.createCell(c).setCellValue(((ChoiceBox<?>) cellValue).getValue().toString());
                         } else {
                             hssfRow.createCell(c).setCellValue(cellValue.toString());
                         }
@@ -255,9 +309,11 @@ public class MainFrameController implements BazisXMLTags {
         rowTempPoint++;
         HSSFRow edgeRow = hssfSheet.createRow(rowTempPoint++);
         edgeRow.createCell(0).setCellValue("Кромочные материалы");
+        edgeRow.getCell(0).setCellStyle(groupTitleStyle);
         HSSFRow edgeTitleRow = hssfSheet.createRow(rowTempPoint++);
         for (int i = 0; i < techEdgeTable.getColumns().size(); i++) {
             edgeTitleRow.createCell(i).setCellValue(techEdgeTable.getColumns().get(i).getText());
+            edgeTitleRow.getCell(i).setCellStyle(titleCellStyle);
         }
         for (int rowItem = 0; rowItem < techEdgeTable.getItems().size(); rowItem++) {
             if (techEdgeTable.getItems().get(rowItem).getNameCheckBox().isSelected()) {
@@ -281,13 +337,11 @@ public class MainFrameController implements BazisXMLTags {
                 }
             }
         }
-
         hssfSheet.autoSizeColumn((short) 0);
         hssfSheet.autoSizeColumn((short) 1);
         hssfSheet.autoSizeColumn((short) 2);
         hssfSheet.autoSizeColumn((short) 3);
         hssfSheet.autoSizeColumn((short) 4);
-
         if (file != null) {
             try (FileOutputStream outputStream = new FileOutputStream(file.getAbsolutePath())) {
                 hssfWorkbook.write(outputStream);
@@ -301,7 +355,7 @@ public class MainFrameController implements BazisXMLTags {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 errorAlert.setTitle("Ошибка");
                 errorAlert.setHeaderText(null);
-                errorAlert.setContentText("Не удалось содать файл " + file.getName());
+                errorAlert.setContentText("Не удалось создать файл " + file.getName());
                 errorAlert.showAndWait();
             }
         }
@@ -326,7 +380,6 @@ public class MainFrameController implements BazisXMLTags {
             e.printStackTrace();
         }
 
-
     }
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
@@ -342,7 +395,7 @@ public class MainFrameController implements BazisXMLTags {
         setEdgeTable(techEdgeDataArrayList);
     }
 
-    //----------------------Проверка чекбоксов------------------
+    //----------------------Проверка чек-боксов------------------
     public static ArrayList<Panel> panelsBySelectedMaterial(ArrayList<Panel> allPanels, ArrayList<CheckBox> checkBoxMaterialList) {
         ArrayList<Panel> selectedMaterialPanels = new ArrayList<>();
         for (CheckBox chk : checkBoxMaterialList) {

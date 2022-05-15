@@ -1,5 +1,6 @@
 package by.furniture.technologdata.controllers;
 
+import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.techClasses.MaterialDB;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -7,9 +8,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import static by.furniture.technologdata.StartPointLauncher.*;
+import java.io.File;
+
+import static by.furniture.technologdata.StartPointLauncher.materialDBList;
 
 public class MaterialDBViewController {
     private Stage materialDBViewStage;
@@ -29,9 +33,12 @@ public class MaterialDBViewController {
     private Button cancelButton;
 
     @FXML
+    private Button editInExcelButton;
+
+    @FXML
     private TableView<MaterialDB> materialDBTableView;
 
-      @FXML
+    @FXML
     void onCancelButtonClick() {
         materialDBViewStage.close();
     }
@@ -39,6 +46,15 @@ public class MaterialDBViewController {
     @FXML
     void initialize() {
         setMaterialDBTable();
+    }
+
+    @FXML
+    private void onEditInExcelButtonClick() {
+        StartPointLauncher startPointLauncher = StartPointLauncher.getStartPointLauncher();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("materialDB file", "materialDB.xls"));
+        File selectedFile = fileChooser.showOpenDialog(editInExcelButton.getScene().getWindow());
+        startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());
     }
 
     private void setMaterialDBTable() {
