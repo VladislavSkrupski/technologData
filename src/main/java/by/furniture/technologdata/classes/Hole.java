@@ -7,9 +7,9 @@ public class Hole {
     private Float diameter;
     private String type;
     private Float depth;
-    private Integer directionX;
-    private Integer directionY;
-    private Integer directionZ;
+    private Float directionX;
+    private Float directionY;
+    private Float directionZ;
 
     public Hole() {
     }
@@ -62,27 +62,27 @@ public class Hole {
         this.depth = depth;
     }
 
-    public Integer getDirectionX() {
+    public Float getDirectionX() {
         return directionX;
     }
 
-    public void setDirectionX(Integer directionX) {
+    public void setDirectionX(Float directionX) {
         this.directionX = directionX;
     }
 
-    public Integer getDirectionY() {
+    public Float getDirectionY() {
         return directionY;
     }
 
-    public void setDirectionY(Integer directionY) {
+    public void setDirectionY(Float directionY) {
         this.directionY = directionY;
     }
 
-    public Integer getDirectionZ() {
+    public Float getDirectionZ() {
         return directionZ;
     }
 
-    public void setDirectionZ(Integer directionZ) {
+    public void setDirectionZ(Float directionZ) {
         this.directionZ = directionZ;
     }
 

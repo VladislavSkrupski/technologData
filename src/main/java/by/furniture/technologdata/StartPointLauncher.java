@@ -470,15 +470,15 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                                 break;
                                             }
                                             case DIRECTION_X: {
-                                                hole.setDirectionX(Integer.parseInt(holesNode.item(b).getTextContent()));
+                                                hole.setDirectionX(Float.parseFloat(holesNode.item(b).getTextContent()));
                                                 break;
                                             }
                                             case DIRECTION_Y: {
-                                                hole.setDirectionY(Integer.parseInt(holesNode.item(b).getTextContent()));
+                                                hole.setDirectionY(Float.parseFloat(holesNode.item(b).getTextContent()));
                                                 break;
                                             }
                                             case DIRECTION_Z: {
-                                                hole.setDirectionZ(Integer.parseInt(holesNode.item(b).getTextContent()));
+                                                hole.setDirectionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
                                                 break;
                                             }
                                         }
