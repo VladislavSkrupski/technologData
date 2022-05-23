@@ -1,6 +1,6 @@
 package by.furniture.technologdata;
 
-import by.furniture.technologdata.classes.*;
+import by.furniture.technologdata.classes.bazisXMLClasses.*;
 import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import by.furniture.technologdata.classes.techClasses.MaterialDB;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
@@ -18,9 +18,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -596,6 +594,10 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < grooveNode.getLength(); b++) {
                                     if (grooveNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (grooveNode.item(b).getNodeName()) {
+                                            case TYPE: {
+                                                groove.setType(grooveNode.item(b).getTextContent());
+                                                break;
+                                            }
                                             case TITLE: {
                                                 groove.setTitle(grooveNode.item(b).getTextContent());
                                                 break;
@@ -610,6 +612,14 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                             }
                                             case LENGTH: {
                                                 groove.setLength(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                                break;
+                                            }
+                                            case WIDTH: {
+                                                groove.setWidth(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                                break;
+                                            }
+                                            case DEPTH: {
+                                                groove.setDepth(Float.parseFloat(grooveNode.item(b).getTextContent()));
                                                 break;
                                             }
                                         }
@@ -1087,8 +1097,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         } catch (IOException e) {
             notFound = true;
         }
-        if (!notFound)
-        {
+        if (!notFound) {
             try (POIFSFileSystem materialDBFile = new POIFSFileSystem(fileInputStream)) {
                 HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
                 HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);

@@ -1,9 +1,9 @@
 package by.furniture.technologdata.controllers;
 
 import by.furniture.technologdata.StartPointLauncher;
-import by.furniture.technologdata.classes.FacingSurface;
-import by.furniture.technologdata.classes.Panel;
-import by.furniture.technologdata.classes.Product;
+import by.furniture.technologdata.classes.bazisXMLClasses.FacingSurface;
+import by.furniture.technologdata.classes.bazisXMLClasses.Panel;
+import by.furniture.technologdata.classes.bazisXMLClasses.Product;
 import by.furniture.technologdata.classes.techClasses.TechEdgeData;
 import by.furniture.technologdata.classes.techClasses.TechMaterialData;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
@@ -430,6 +430,7 @@ public class MainFrameController implements BazisXMLTags {
     void showUnsupportedPanels(ArrayList<Panel> panelsArrayList) {
         ArrayList<Panel> selectedPanels = panelsBySelectedMaterial(panelsArrayList, mainMaterialCheckBoxes);
         for (Panel p : selectedPanels) {
+            //TODO panels, that has oversize of list
         }
     }
 

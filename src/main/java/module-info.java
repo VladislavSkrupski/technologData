@@ -7,7 +7,6 @@ module by.furniture.technologdata {
     requires org.apache.poi.poi;
     requires java.xml;
 
-
     exports by.furniture.technologdata;
     opens by.furniture.technologdata to javafx.fxml;
     exports by.furniture.technologdata.classes;
@@ -17,4 +16,5 @@ module by.furniture.technologdata {
     opens by.furniture.technologdata.interfaces to javafx.fxml;
     exports by.furniture.technologdata.controllers;
     opens by.furniture.technologdata.controllers to javafx.fxml;
+    exports by.furniture.technologdata.classes.bazisXMLClasses;
 }

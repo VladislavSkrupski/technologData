@@ -1,6 +1,6 @@
 package by.furniture.technologdata.classes.techClasses;
 
-import by.furniture.technologdata.classes.Panel;
+import by.furniture.technologdata.classes.bazisXMLClasses.Panel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
