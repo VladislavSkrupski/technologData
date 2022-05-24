@@ -4,6 +4,7 @@ import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.bazisXMLClasses.FacingSurface;
 import by.furniture.technologdata.classes.bazisXMLClasses.Panel;
 import by.furniture.technologdata.classes.bazisXMLClasses.Product;
+import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import by.furniture.technologdata.classes.techClasses.TechEdgeData;
 import by.furniture.technologdata.classes.techClasses.TechMaterialData;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
@@ -487,7 +488,7 @@ public class MainFrameController implements BazisXMLTags {
         }
         // Увеличение длины кромки на коэффициент
         edgesMap.forEach((k, v) -> {
-            v.setLength((v.getLength() * configurationProperties.getEdgeCoefficient()) / 1000);
+            v.setLength((v.getLength() * ConfigurationProperties.getConfigurationProperties().getEdgeCoefficient()) / 1000);
             v.setOrderWholeLength();
             edgeData.add(v);
         });
@@ -544,7 +545,7 @@ public class MainFrameController implements BazisXMLTags {
                 String format = materialDBList.get(str).getFormatChoiceBox().getValue();
                 if (facingSurfaceSquareMap.get(str) != null) {
                     float squareInList = (mainMaterialSquareMap.get(str) == null ? 0 : mainMaterialSquareMap.get(str)) + facingSurfaceSquareMap.get(str);
-                    squareInList = (squareInList * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
+                    squareInList = (squareInList * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
                     BigDecimal square = new BigDecimal(squareInList);
                     materialsSquareData.add(new TechMaterialData(
                             str,
@@ -554,7 +555,7 @@ public class MainFrameController implements BazisXMLTags {
                             "лист",
                             square.setScale(0, RoundingMode.CEILING).toString()));
                 } else {
-                    float squareInList = (mainMaterialSquareMap.get(str) * configurationProperties.getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
+                    float squareInList = (mainMaterialSquareMap.get(str) * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
                     BigDecimal square = new BigDecimal(squareInList);
                     materialsSquareData.add(new TechMaterialData(
                             str,

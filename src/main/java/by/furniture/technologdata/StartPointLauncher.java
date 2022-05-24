@@ -20,17 +20,12 @@ import org.w3c.dom.NodeList;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class StartPointLauncher extends Application implements BazisXMLTags {
     private static StartPointLauncher startPointLauncher;
 
     private static Stage mainStage;
-
-    public static final ConfigurationProperties configurationProperties = new ConfigurationProperties();
 
     public static final HashMap<String, MaterialDB> materialDBList = new HashMap<>();
 
@@ -1091,7 +1086,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         try {
             if (notFound) {
-                fileInputStream = new FileInputStream("./materialDB.xls");
+                fileInputStream = new FileInputStream(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB());
                 notFound = false;
             }
         } catch (IOException e) {
