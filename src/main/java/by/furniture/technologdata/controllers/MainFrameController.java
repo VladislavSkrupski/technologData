@@ -54,7 +54,7 @@ public class MainFrameController implements BazisXMLTags {
 
 
     @FXML
-    private MenuItem openFile;
+    private MenuItem openFileMenuItem;
     @FXML
     private MenuItem dataBaseMenuItem;
     @FXML
@@ -86,7 +86,7 @@ public class MainFrameController implements BazisXMLTags {
     void onOpenFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Спецификация Bazis XML", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(openFile.getParentPopup().getScene().getWindow());
+        File selectedFile = fileChooser.showOpenDialog(openFileMenuItem.getParentPopup().getScene().getWindow());
         if (selectedFile != null) {
             panels.clear();
             mainMaterials.clear();
@@ -365,6 +365,26 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     @FXML
+    void onPropertiesMenuItemClick() {
+        FXMLLoader configurationFrameLoader = new FXMLLoader();
+        try {
+            configurationFrameLoader.setLocation(StartPointLauncher.class.getResource("fxml/configurationFrame.fxml"));
+            VBox frame = configurationFrameLoader.load();
+            Stage configurationFrameStage = new Stage();
+            configurationFrameStage.setTitle("Настройки");
+            configurationFrameStage.initModality(Modality.WINDOW_MODAL);
+            configurationFrameStage.initOwner(getMainStage());
+            Scene configurationFrameScene = new Scene(Objects.requireNonNull(frame));
+            configurationFrameStage.setScene(configurationFrameScene);
+            ConfigurationFrameController controller = configurationFrameLoader.getController();
+            controller.setConfigurationFrameStage(configurationFrameStage);
+            configurationFrameStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     void onDataBaseMenuItemClick() {
         FXMLLoader materialDBViewLoader = new FXMLLoader();
         try {
@@ -411,7 +431,7 @@ public class MainFrameController implements BazisXMLTags {
             });
             controller.getThicknessField().textProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue.matches("\\d*\\.?\\d+")) {
-                    controller.getThicknessField().setText(newValue.replaceAll("[^\\d.]", ""));
+                    controller.getThicknessField().setText(newValue.replaceAll("[^\\d.]", "")); //TODO check regex!
                 }
             });
             addMaterialDBStage.showAndWait();

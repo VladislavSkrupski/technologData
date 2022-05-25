@@ -1,5 +1,7 @@
 package by.furniture.technologdata.classes.configuration;
 
+import javafx.scene.control.Alert;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,7 +10,7 @@ import java.util.Properties;
 public class ConfigurationProperties {
     private static ConfigurationProperties configurationProperties;
 
-    private static Properties properties;
+    private static final Properties properties = new Properties();
     private float edgeCoefficient;
     private float materialCoefficient;
     private String pathToOpenXML;
@@ -17,19 +19,17 @@ public class ConfigurationProperties {
 
     private ConfigurationProperties() {
         loadPropertiesFromFile();
-        this.edgeCoefficient = Float.parseFloat(properties.getProperty("edgeCoefficient", "1.15f"));
-        this.materialCoefficient = Float.parseFloat(properties.getProperty("materialCoefficient", "1.3f"));
-        this.pathToOpenXML = properties.getProperty("pathToOpenXML", "");
-        this.pathToSaveXLS = properties.getProperty("pathToSaveXLS", "");
-        this.pathToMaterialDB = properties.getProperty("pathToMaterialDB", "./materialDB.xls");
+        this.edgeCoefficient = Float.parseFloat(properties.getProperty("edgeCoefficient"));
+        this.materialCoefficient = Float.parseFloat(properties.getProperty("materialCoefficient"));
+        this.pathToOpenXML = properties.getProperty("pathToOpenXML");
+        this.pathToSaveXLS = properties.getProperty("pathToSaveXLS");
+        this.pathToMaterialDB = properties.getProperty("pathToMaterialDB");
     }
 
     // SINGLETON
     public static ConfigurationProperties getConfigurationProperties() {
         if (configurationProperties == null) {
             configurationProperties = new ConfigurationProperties();
-        } else {
-            loadPropertiesFromFile();
         }
         return configurationProperties;
     }
@@ -75,39 +75,29 @@ public class ConfigurationProperties {
     }
 
     private static void createConfigurationFile() {
-        properties = new Properties();
-        properties.setProperty("edgeCoefficient", "1.15f");
-        properties.setProperty("materialCoefficient", "1.3f");
+        properties.setProperty("edgeCoefficient", "1.15");
+        properties.setProperty("materialCoefficient", "1.3");
         properties.setProperty("pathToOpenXML", "");
         properties.setProperty("pathToMaterialDB", "./materialDB.xls");
         properties.setProperty("pathToSaveXLS", "");
+        String pathToConfig = System.getProperty("user.dir") + "\\properties.conf";
         try {
-            properties.store(new FileOutputStream("by/furniture/technologdata/properties.conf"), "Created");
+            properties.store(new FileOutputStream(pathToConfig), "Created");
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Не удалось создать файл конфигурации properties.conf");
+            alert.showAndWait();
         }
     }
 
     private static void loadPropertiesFromFile() {
-        String pathToConfigInDebug = "properties.conf";
-        String pathToConfigInRelease = "./properties.conf";
-        FileInputStream configFile;
-        boolean notFound = false;
+        String pathToConfig = System.getProperty("user.dir") + "\\properties.conf";
         try {
-            configFile = new FileInputStream(pathToConfigInDebug);
+            FileInputStream configFile = new FileInputStream(pathToConfig);
             properties.load(configFile);
         } catch (IOException e) {
-            System.out.println("1");
-            notFound = true;
-        }
-        try {
-            if (notFound) {
-                configFile = new FileInputStream(pathToConfigInRelease);
-                properties.load(configFile);
-                notFound = false;
-            }
-        } catch (IOException e) {
-            System.out.println("creating config");
             createConfigurationFile();
         }
     }

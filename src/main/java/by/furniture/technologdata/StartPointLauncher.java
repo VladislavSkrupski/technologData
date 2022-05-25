@@ -1093,31 +1093,33 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
             notFound = true;
         }
         if (!notFound) {
-            try (POIFSFileSystem materialDBFile = new POIFSFileSystem(fileInputStream)) {
-                HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
-                HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
-                for (int i = 1; i < materialDBSheet.getLastRowNum() + 1; i++) {
-                    HSSFRow row = materialDBSheet.getRow(i);
-                    HSSFCell articleCell = row.getCell(0);
-                    HSSFCell nameCell = row.getCell(1);
-                    HSSFCell listLengthCell = row.getCell(2);
-                    HSSFCell listWidthCell = row.getCell(3);
-                    HSSFCell listThicknessCell = row.getCell(4);
-                    MaterialDB materialDB = new MaterialDB(
-                            articleCell.getStringCellValue(),
-                            nameCell.getStringCellValue(),
-                            (float) listLengthCell.getNumericCellValue(),
-                            (float) listWidthCell.getNumericCellValue(),
-                            (float) listThicknessCell.getNumericCellValue()
-                    );
-                    if (materialDBS.containsKey(materialDB.getName())) {
-                        materialDBS.get(materialDB.getName()).setListFormat(materialDB.getBoardFormatsMap());
-                    } else {
-                        materialDBS.put(materialDB.getName(), materialDB);
+            try {
+                try (POIFSFileSystem materialDBFile = new POIFSFileSystem(fileInputStream)) {
+                    HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
+                    HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
+                    for (int i = 1; i < materialDBSheet.getLastRowNum() + 1; i++) {
+                        HSSFRow row = materialDBSheet.getRow(i);
+                        HSSFCell articleCell = row.getCell(0);
+                        HSSFCell nameCell = row.getCell(1);
+                        HSSFCell listLengthCell = row.getCell(2);
+                        HSSFCell listWidthCell = row.getCell(3);
+                        HSSFCell listThicknessCell = row.getCell(4);
+                        MaterialDB materialDB = new MaterialDB(
+                                articleCell.getStringCellValue(),
+                                nameCell.getStringCellValue(),
+                                (float) listLengthCell.getNumericCellValue(),
+                                (float) listWidthCell.getNumericCellValue(),
+                                (float) listThicknessCell.getNumericCellValue()
+                        );
+                        if (materialDBS.containsKey(materialDB.getName())) {
+                            materialDBS.get(materialDB.getName()).setListFormat(materialDB.getBoardFormatsMap());
+                        } else {
+                            materialDBS.put(materialDB.getName(), materialDB);
+                        }
+                        materialDBS.get(materialDB.getName()).setFormatChoiceBox();
+                        materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {
+                        });
                     }
-                    materialDBS.get(materialDB.getName()).setFormatChoiceBox();
-                    materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {
-                    });
                 }
             } catch (IOException e) {
                 e.printStackTrace();

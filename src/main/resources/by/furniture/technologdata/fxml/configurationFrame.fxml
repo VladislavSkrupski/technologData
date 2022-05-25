@@ -5,44 +5,110 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.ConfigurationFrameController">
-   <children>
-      <GridPane>
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="283.0" minWidth="10.0" prefWidth="274.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.0" minWidth="10.0" prefWidth="106.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </VBox.margin>
-         <children>
-            <Label text="Коэффициент избытка кромки:">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <Label text="Коэффициент избытка листового материала:" GridPane.rowIndex="1">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <TextField GridPane.columnIndex="1">
-               <GridPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </GridPane.margin>
-            </TextField>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <GridPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </GridPane.margin>
-            </TextField>
-         </children>
-      </GridPane>
-      <Label text="Label" />
-      <Label text="Label" />
-   </children>
+<VBox prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.ConfigurationFrameController">
+    <children>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="283.0" minWidth="10.0" prefWidth="274.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.0" minWidth="10.0" prefWidth="106.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <VBox.margin>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin>
+            <children>
+                <Label text="Коэффициент избытка кромки:">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Label>
+                <Label text="Коэффициент избытка листового материала:" GridPane.rowIndex="1">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="edgeCoefficientTextField" GridPane.columnIndex="1">
+                    <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </GridPane.margin>
+                </TextField>
+                <TextField fx:id="materialCoefficientTextField" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </GridPane.margin>
+                </TextField>
+            </children>
+        </GridPane>
+        <Label text="Путь к файлам XML:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+            <VBox.margin>
+                <Insets left="10.0" right="10.0" />
+            </VBox.margin>
+        </Label>
+        <HBox>
+            <children>
+                <TextField fx:id="pathToXMLTextField" editable="false" HBox.hgrow="ALWAYS" />
+                <Button fx:id="pathToXMLButton" mnemonicParsing="false" text="..." />
+            </children>
+            <VBox.margin>
+                <Insets left="15.0" right="15.0" top="5.0" />
+            </VBox.margin>
+        </HBox>
+        <Label text="Путь к сохранённым файлам XLS:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+            <VBox.margin>
+                <Insets left="10.0" right="10.0" top="10.0" />
+            </VBox.margin>
+        </Label>
+        <HBox>
+            <children>
+                <TextField fx:id="pathToXLSTextField" editable="false" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+                <Button fx:id="pathToXLSButton" mnemonicParsing="false" text="..." />
+            </children>
+            <VBox.margin>
+                <Insets left="15.0" right="15.0" top="5.0" />
+            </VBox.margin>
+        </HBox>
+        <Label text="Путь к базе материалов materialDB.xls:">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+            <VBox.margin>
+                <Insets left="10.0" right="10.0" top="10.0" />
+            </VBox.margin>
+        </Label>
+        <HBox>
+            <children>
+                <TextField fx:id="pathToMaterialDBTextField" editable="false" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+                <Button fx:id="pathToMaterialDBButton" mnemonicParsing="false" text="..." />
+            </children>
+            <VBox.margin>
+                <Insets left="15.0" right="15.0" top="5.0" />
+            </VBox.margin>
+        </HBox>
+        <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="5.0" VBox.vgrow="ALWAYS">
+            <children>
+                <Button fx:id="OKButton" defaultButton="true" mnemonicParsing="false" prefWidth="70.0" text="ОК" />
+                <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" prefWidth="70.0" text="Отмена" />
+            </children>
+            <VBox.margin>
+                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+            </VBox.margin>
+        </HBox>
+    </children>
 </VBox>
