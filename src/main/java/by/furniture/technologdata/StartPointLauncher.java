@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -1075,57 +1076,65 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
      * @return возвращает HashMap объектов MaterialDB с ключами из наименования материала
      */
     private static HashMap<String, MaterialDB> getMaterialDBList() {
-        String materialDBFilePath = "src/main/resources/by/furniture/technologdata/materialDB.xls";
         HashMap<String, MaterialDB> materialDBS = new HashMap<>();
+//        String materialDBFilePath = "src/main/resources/by/furniture/technologdata/materialDB.xls";
+//        FileInputStream fileInputStream = null;
+//        boolean notFound = false;
+//        try {
+//            fileInputStream = new FileInputStream(materialDBFilePath);
+//        } catch (IOException e) {
+//            notFound = true;
+//        }
+//        try {
+//            if (notFound) {
+//                fileInputStream = new FileInputStream(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB());
+//                notFound = false;
+//            }
+//        } catch (IOException e) {
+//            notFound = true;
+//        }
+//        if (!notFound) {
         FileInputStream fileInputStream = null;
-        boolean notFound = false;
         try {
-            fileInputStream = new FileInputStream(materialDBFilePath);
-        } catch (IOException e) {
-            notFound = true;
+            String path = ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB();
+            fileInputStream = new FileInputStream(path + "\\materialDB.xls");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         try {
-            if (notFound) {
-                fileInputStream = new FileInputStream(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB());
-                notFound = false;
-            }
-        } catch (IOException e) {
-            notFound = true;
-        }
-        if (!notFound) {
-            try {
-                try (POIFSFileSystem materialDBFile = new POIFSFileSystem(fileInputStream)) {
-                    HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
-                    HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
-                    for (int i = 1; i < materialDBSheet.getLastRowNum() + 1; i++) {
-                        HSSFRow row = materialDBSheet.getRow(i);
-                        HSSFCell articleCell = row.getCell(0);
-                        HSSFCell nameCell = row.getCell(1);
-                        HSSFCell listLengthCell = row.getCell(2);
-                        HSSFCell listWidthCell = row.getCell(3);
-                        HSSFCell listThicknessCell = row.getCell(4);
-                        MaterialDB materialDB = new MaterialDB(
-                                articleCell.getStringCellValue(),
-                                nameCell.getStringCellValue(),
-                                (float) listLengthCell.getNumericCellValue(),
-                                (float) listWidthCell.getNumericCellValue(),
-                                (float) listThicknessCell.getNumericCellValue()
-                        );
-                        if (materialDBS.containsKey(materialDB.getName())) {
-                            materialDBS.get(materialDB.getName()).setListFormat(materialDB.getBoardFormatsMap());
-                        } else {
-                            materialDBS.put(materialDB.getName(), materialDB);
-                        }
-                        materialDBS.get(materialDB.getName()).setFormatChoiceBox();
-                        materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {
-                        });
+            assert fileInputStream != null;
+            try (POIFSFileSystem materialDBFile = new POIFSFileSystem(fileInputStream)) {
+                HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
+                HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
+                for (int i = 1; i < materialDBSheet.getLastRowNum() + 1; i++) {
+                    HSSFRow row = materialDBSheet.getRow(i);
+                    HSSFCell articleCell = row.getCell(0);
+                    HSSFCell nameCell = row.getCell(1);
+                    HSSFCell listLengthCell = row.getCell(2);
+                    HSSFCell listWidthCell = row.getCell(3);
+                    HSSFCell listThicknessCell = row.getCell(4);
+                    MaterialDB materialDB = new MaterialDB(
+                            articleCell.getStringCellValue(),
+                            nameCell.getStringCellValue(),
+                            (float) listLengthCell.getNumericCellValue(),
+                            (float) listWidthCell.getNumericCellValue(),
+                            (float) listThicknessCell.getNumericCellValue()
+                    );
+                    if (materialDBS.containsKey(materialDB.getName())) {
+                        materialDBS.get(materialDB.getName()).setListFormat(materialDB.getBoardFormatsMap());
+                    } else {
+                        materialDBS.put(materialDB.getName(), materialDB);
                     }
+                    materialDBS.get(materialDB.getName()).setFormatChoiceBox();
+                    materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {
+                    });
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
+        // }
         return materialDBS;
     }
 }

@@ -2,6 +2,7 @@ package by.furniture.technologdata.controllers;
 
 
 import by.furniture.technologdata.StartPointLauncher;
+import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import by.furniture.technologdata.classes.techClasses.MaterialDB;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -67,6 +68,7 @@ public class MaterialDBViewController {
         StartPointLauncher startPointLauncher = StartPointLauncher.getStartPointLauncher();
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("materialDB file", "materialDB.xls"));
+        fileChooser.setInitialDirectory(new File(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB()));
         File selectedFile = fileChooser.showOpenDialog(editInExcelButton.getScene().getWindow());
         if (selectedFile != null) {
             startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());

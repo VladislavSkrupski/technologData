@@ -103,7 +103,7 @@
         </HBox>
         <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="5.0" VBox.vgrow="ALWAYS">
             <children>
-                <Button fx:id="OKButton" defaultButton="true" mnemonicParsing="false" prefWidth="70.0" text="ОК" />
+                <Button fx:id="OKButton" onAction="#onOKButtonClick" defaultButton="true" mnemonicParsing="false" prefWidth="70.0" text="ОК" />
                 <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" prefWidth="70.0" text="Отмена" />
             </children>
             <VBox.margin>

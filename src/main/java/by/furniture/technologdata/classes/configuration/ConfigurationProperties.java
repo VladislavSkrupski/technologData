@@ -77,9 +77,9 @@ public class ConfigurationProperties {
     private static void createConfigurationFile() {
         properties.setProperty("edgeCoefficient", "1.15");
         properties.setProperty("materialCoefficient", "1.3");
-        properties.setProperty("pathToOpenXML", "");
-        properties.setProperty("pathToMaterialDB", "./materialDB.xls");
-        properties.setProperty("pathToSaveXLS", "");
+        properties.setProperty("pathToOpenXML", System.getProperty("user.dir"));
+        properties.setProperty("pathToMaterialDB", System.getProperty("user.dir"));
+        properties.setProperty("pathToSaveXLS", System.getProperty("user.dir"));
         String pathToConfig = System.getProperty("user.dir") + "\\properties.conf";
         try {
             properties.store(new FileOutputStream(pathToConfig), "Created");
@@ -99,6 +99,24 @@ public class ConfigurationProperties {
             properties.load(configFile);
         } catch (IOException e) {
             createConfigurationFile();
+        }
+    }
+
+    public static void savePropertiesToFile() {
+        properties.setProperty("edgeCoefficient", String.valueOf(configurationProperties.getEdgeCoefficient()));
+        properties.setProperty("materialCoefficient", String.valueOf(configurationProperties.getMaterialCoefficient()));
+        properties.setProperty("pathToOpenXML", configurationProperties.getPathToOpenXML());
+        properties.setProperty("pathToMaterialDB", configurationProperties.getPathToMaterialDB());
+        properties.setProperty("pathToSaveXLS", configurationProperties.getPathToSaveXLS());
+        String pathToConfig = System.getProperty("user.dir") + "\\properties.conf";
+        try {
+            properties.store(new FileOutputStream(pathToConfig), "Saved");
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Не удалось сохранить файл конфигурации properties.conf");
+            alert.showAndWait();
         }
     }
 }

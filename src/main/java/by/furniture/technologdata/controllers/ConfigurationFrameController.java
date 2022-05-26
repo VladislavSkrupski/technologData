@@ -1,6 +1,7 @@
 package by.furniture.technologdata.controllers;
 
 import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
+import by.furniture.technologdata.interfaces.AdditionalOptions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -47,16 +48,31 @@ public class ConfigurationFrameController {
         pathToXLSButton.setOnAction(actionEvent -> pathToXLSTextField.setText(getPath(pathToXLSTextField.getText())));
         pathToMaterialDBButton.setOnAction(actionEvent -> pathToMaterialDBTextField.setText(getPath(pathToMaterialDBTextField.getText())));
         cancelButton.setOnAction(actionEvent -> configurationFrameStage.close());
-        edgeCoefficientTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*\\.?\\d+")) {
-                edgeCoefficientTextField.setText(newValue.replaceAll("[^\\d]", "")); //TODO check regex!
-            }
-        });
-        materialCoefficientTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*\\.?\\d+")) {
-                materialCoefficientTextField.setText(newValue.replaceAll("[^\\d]", "")); //TODO check regex!
-            }
-        });
+        AdditionalOptions.checkFloatInput(edgeCoefficientTextField);
+        AdditionalOptions.checkFloatInput(materialCoefficientTextField);
+    }
+
+    @FXML
+    private void onOKButtonClick() {
+        ConfigurationProperties.getConfigurationProperties().setEdgeCoefficient(Float.parseFloat(edgeCoefficientTextField.getText()));
+        ConfigurationProperties.getConfigurationProperties().setMaterialCoefficient(Float.parseFloat(materialCoefficientTextField.getText()));
+        if (!pathToXMLTextField.getText().equals("")) {
+            ConfigurationProperties.getConfigurationProperties().setPathToOpenXML(pathToXMLTextField.getText());
+        } else {
+            ConfigurationProperties.getConfigurationProperties().setPathToOpenXML(System.getProperty("user.dir"));
+        }
+        if (!pathToXLSTextField.getText().equals("")) {
+            ConfigurationProperties.getConfigurationProperties().setPathToSaveXLS(pathToXLSTextField.getText());
+        } else {
+            ConfigurationProperties.getConfigurationProperties().setPathToSaveXLS(System.getProperty("user.dir"));
+        }
+        if (!pathToMaterialDBTextField.getText().equals("")) {
+            ConfigurationProperties.getConfigurationProperties().setPathToMaterialDB(pathToMaterialDBTextField.getText());
+        } else {
+            ConfigurationProperties.getConfigurationProperties().setPathToMaterialDB(System.getProperty("user.dir"));
+        }
+        ConfigurationProperties.savePropertiesToFile();
+        configurationFrameStage.close();
     }
 
     public Stage getConfigurationFrameStage() {
