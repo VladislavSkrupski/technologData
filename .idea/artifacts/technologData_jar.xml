@@ -23,6 +23,7 @@
       <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:18.0.1" />
       <element id="library" level="project" name="Maven: org.w3c:dom:2.3.0-jaxb-1.0.6" />
       <element id="library" level="project" name="Maven: org.controlsfx:controlsfx:11.1.1" />
+      <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.17.2" />
     </root>
   </artifact>
 </component>

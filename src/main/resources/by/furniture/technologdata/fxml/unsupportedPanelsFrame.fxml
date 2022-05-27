@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.UnsupportedPanelsFrameController">
+   <children>
+      <TableView fx:id="unsupportedPanelTableView" prefHeight="347.0" prefWidth="780.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" text="V" />
+          <TableColumn prefWidth="60.0" text="Позиция" />
+          <TableColumn prefWidth="160.0" text="Наименование" />
+            <TableColumn prefWidth="60.0" text="Длина" />
+            <TableColumn prefWidth="60.0" text="Ширина" />
+            <TableColumn prefWidth="50.0" text="Кол-во" />
+            <TableColumn prefWidth="350.0" text="Материал" />
+        </columns>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </TableView>
+      <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="5.0">
+         <children>
+            <Button mnemonicParsing="false" fx:id="exportButton" onAction="#onExportButtonClick" prefWidth="80.0" text="Экспорт" />
+            <Button mnemonicParsing="false" onAction="#onCancelButtonClick" prefWidth="80.0" text="Отмена" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

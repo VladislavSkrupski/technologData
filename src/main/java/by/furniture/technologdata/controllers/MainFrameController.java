@@ -7,6 +7,7 @@ import by.furniture.technologdata.classes.bazisXMLClasses.Product;
 import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import by.furniture.technologdata.classes.techClasses.TechEdgeData;
 import by.furniture.technologdata.classes.techClasses.TechMaterialData;
+import by.furniture.technologdata.classes.techClasses.UnsupportedPanel;
 import by.furniture.technologdata.interfaces.AdditionalOptions;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Platform;
@@ -45,14 +46,13 @@ import java.util.*;
 import static by.furniture.technologdata.StartPointLauncher.*;
 
 public class MainFrameController implements BazisXMLTags {
-
+    private List<UnsupportedPanel> unsupportedPanels = new ArrayList<>();
     public static ArrayList<Panel> panels = new ArrayList<>();
     private final TreeSet<String> mainMaterials = new TreeSet<>();
     private final ArrayList<TechMaterialData> techMaterialDataArrayList = new ArrayList<>();
     private final ArrayList<TechEdgeData> techEdgeDataArrayList = new ArrayList<>();
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
-
 
     @FXML
     private MenuItem openFileMenuItem;
@@ -76,6 +76,8 @@ public class MainFrameController implements BazisXMLTags {
     private TableView<TechMaterialData> techMaterialTable;
     @FXML
     private TableView<TechEdgeData> techEdgeTable;
+    @FXML
+    private Button unsupportedPanelsButton;
 
     @FXML
     void onExitClick() {
@@ -408,6 +410,27 @@ public class MainFrameController implements BazisXMLTags {
         }
     }
 
+    @FXML
+    void onUnsupportedPanelsButtonClick() {
+        FXMLLoader unsupportedPanelsFrameLoader = new FXMLLoader();
+        try {
+            unsupportedPanelsFrameLoader.setLocation(StartPointLauncher.class.getResource("fxml/unsupportedPanelsFrame.fxml"));
+            VBox frame = unsupportedPanelsFrameLoader.load();
+            Stage unsupportedPanelsFrameStage = new Stage();
+            unsupportedPanelsFrameStage.setTitle("Сверхгабаритные панели");
+            unsupportedPanelsFrameStage.initModality(Modality.WINDOW_MODAL);
+            unsupportedPanelsFrameStage.initOwner(getMainStage());
+            Scene unsupportedPanelsFrameScene = new Scene(Objects.requireNonNull(frame));
+            unsupportedPanelsFrameStage.setScene(unsupportedPanelsFrameScene);
+            UnsupportedPanelsFrameController controller = unsupportedPanelsFrameLoader.getController();
+            controller.setUnsupportedPanels(unsupportedPanels);
+            controller.setUnsupportedPanelsFrameStage(unsupportedPanelsFrameStage);
+            unsupportedPanelsFrameStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showAddMaterialDBForm(String str) {
         FXMLLoader addMaterialDBLoader = new FXMLLoader();
         try {
@@ -440,26 +463,31 @@ public class MainFrameController implements BazisXMLTags {
 
     void showUnsupportedPanels(ArrayList<Panel> panelsArrayList) { //TODO panels, that has oversize of list
         ArrayList<Panel> selectedPanels = panelsBySelectedMaterial(panelsArrayList, mainMaterialCheckBoxes);
-        ArrayList<Panel> oversizePanels = new ArrayList<>();
         for (Panel p : selectedPanels) {
             if (materialDBList.containsKey(p.getMainMaterial().getNomination())) {
                 String format = materialDBList.get(p.getMainMaterial().getNomination()).getFormatChoiceBox().getSelectionModel().getSelectedItem();
                 float boardLength = materialDBList.get(p.getMainMaterial().getNomination()).getBoardFormatsMap().get(format)[0];
                 float boardWidth = materialDBList.get(p.getMainMaterial().getNomination()).getBoardFormatsMap().get(format)[1];
                 if (p.getLength() > boardLength || p.getWidth() > boardWidth) {
-                    oversizePanels.add(p);
+                    UnsupportedPanel unsupportedPanel = new UnsupportedPanel();
+                    unsupportedPanel.setChecked(new CheckBox(""));
+                    unsupportedPanel.getChecked().setSelected(true);
+                    unsupportedPanel.setPosition(p.getPosition());
+                    unsupportedPanel.setNomination(p.getNomination());
+                    unsupportedPanel.setLength(p.getLength());
+                    unsupportedPanel.setWidth(p.getWidth());
+                    unsupportedPanel.setAmount(p.getAmount());
+                    unsupportedPanel.setMaterialNomination(p.getMainMaterial().getNomination());
+                    unsupportedPanels.add(unsupportedPanel);
                 }
             }
         }
-        if (oversizePanels.size() > 0) {
-            StringBuilder recordOfPanels = new StringBuilder();
-            for (Panel p : oversizePanels) {
-                recordOfPanels.append(p.getMainMaterial().getNomination()).append(" поз. ").append(p.getPosition()).append(" ").append(p.getLength().toString()).append("x").append(p.getWidth()).append(" кол-во ").append(p.getAmount()).append("шт.\n");
-            }
+        if (!unsupportedPanels.isEmpty()) {
+            unsupportedPanelsButton.visibleProperty().setValue(true);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Превышение габарита листа");
             alert.setHeaderText(null);
-            alert.setContentText("Детали не помещаются в лист:\n" + recordOfPanels);
+            alert.setContentText("Есть детали не помещающиеся в лист");
             alert.showAndWait();
         }
     }
