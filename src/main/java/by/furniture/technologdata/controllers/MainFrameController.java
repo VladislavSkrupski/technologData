@@ -46,7 +46,7 @@ import java.util.*;
 import static by.furniture.technologdata.StartPointLauncher.*;
 
 public class MainFrameController implements BazisXMLTags {
-    private List<UnsupportedPanel> unsupportedPanels = new ArrayList<>();
+    private final List<UnsupportedPanel> unsupportedPanels = new ArrayList<>();
     public static ArrayList<Panel> panels = new ArrayList<>();
     private final TreeSet<String> mainMaterials = new TreeSet<>();
     private final ArrayList<TechMaterialData> techMaterialDataArrayList = new ArrayList<>();
@@ -87,6 +87,8 @@ public class MainFrameController implements BazisXMLTags {
 
     @FXML
     void onOpenFile() {
+        unsupportedPanels.clear();
+        unsupportedPanelsButton.visibleProperty().setValue(false);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(ConfigurationProperties.getConfigurationProperties().getPathToOpenXML()));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Спецификация Bazis XML", "*.xml"));
@@ -187,7 +189,7 @@ public class MainFrameController implements BazisXMLTags {
             exportButton.setDisable(false);
             materialDBList.forEach((k, v) -> v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels)));
             setEdgeTable(techEdgeDataArrayList);
-            showUnsupportedPanels(panels);//TODO start point for unsupported panels - uncomment
+            showUnsupportedPanels(panels);
         }
     }
 
