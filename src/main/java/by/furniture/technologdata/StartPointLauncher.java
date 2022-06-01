@@ -1077,29 +1077,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
      */
     private static HashMap<String, MaterialDB> getMaterialDBList() {
         HashMap<String, MaterialDB> materialDBS = new HashMap<>();
-//        String materialDBFilePath = "src/main/resources/by/furniture/technologdata/materialDB.xls";
-//        FileInputStream fileInputStream = null;
-//        boolean notFound = false;
-//        try {
-//            fileInputStream = new FileInputStream(materialDBFilePath);
-//        } catch (IOException e) {
-//            notFound = true;
-//        }
-//        try {
-//            if (notFound) {
-//                fileInputStream = new FileInputStream(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB());
-//                notFound = false;
-//            }
-//        } catch (IOException e) {
-//            notFound = true;
-//        }
-//        if (!notFound) {
         FileInputStream fileInputStream = null;
         try {
             String path = ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB();
             fileInputStream = new FileInputStream(path + "\\materialDB.xls");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            e.printStackTrace();//TODO search materialDB.xls or create new
         }
         try {
             assert fileInputStream != null;
@@ -1136,5 +1119,9 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         // }
         return materialDBS;
+    }
+    private static Panel setRealLengthAndWidth(Panel panel){//TODO set real length and width
+
+        return panel;
     }
 }
