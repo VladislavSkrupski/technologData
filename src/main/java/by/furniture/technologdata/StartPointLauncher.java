@@ -1123,6 +1123,14 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         return materialDBS;
     }
 
+    /**
+     * <p>В спецификации XML есть подмена понятий:</p>
+     * <p>длина - размер вдоль оси <b>X</b> ЛСК панели</p>
+     * <p>ширина - размер вдоль оси <b>Y</b> ЛСК панели</p>
+     * <p>Для получения реальных габаритов детали относительно текстуры вводится учёт ориентации тескуры</p>
+     *
+     * @param panel панель, полученная из спецификации XML
+     */
     private static void setRealLengthAndWidth(Panel panel) {
         float x = panel.getLength(), y = panel.getWidth();
         float xWithoutEdge = panel.getPartLengthWithoutEdging(), yWithoutEdge = panel.getPartWidthWithoutEdging();
@@ -1132,16 +1140,19 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
             if (panel.getOrientationOfTexture().equals(o.getValue()))
                 orientation = o;
         }
-        switch (orientation) {
-            case HORIZONTAL -> {
-            }
-            case VERTICAL, UNDEFINED -> {
-                panel.setLength(y);
-                panel.setWidth(x);
-                panel.setPartLengthWithoutEdging(yWithoutEdge);
-                panel.setPartWidthWithoutEdging(xWithoutEdge);
-                panel.setFinishedPartLength(yFinished);
-                panel.setFinishedPartWidth(xFinished);
+        if (!panel.isConvertedToRealSizes()) {
+            switch (orientation) {
+                case HORIZONTAL -> {
+                }
+                case VERTICAL, UNDEFINED -> {
+                    panel.setLength(y);
+                    panel.setWidth(x);
+                    panel.setPartLengthWithoutEdging(yWithoutEdge);
+                    panel.setPartWidthWithoutEdging(xWithoutEdge);
+                    panel.setFinishedPartLength(yFinished);
+                    panel.setFinishedPartWidth(xFinished);
+                    panel.setConvertedToRealSizes(true);
+                }
             }
         }
     }

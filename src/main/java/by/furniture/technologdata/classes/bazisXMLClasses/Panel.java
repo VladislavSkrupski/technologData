@@ -35,6 +35,7 @@ public class Panel {
     private ArrayList<PieceworkOperation> pieceworkOperations = new ArrayList<>();
     private ArrayList<RelatedMaterial> relatedMaterials = new ArrayList<>();
     private ArrayList<CustomProperty> customProperties = new ArrayList<>();
+    private boolean isConvertedToRealSizes = false;
 
     public Panel() {
     }
@@ -271,6 +272,18 @@ public class Panel {
         this.customProperties = customProperties;
     }
 
+    public boolean isConvertedToRealSizes() {
+        return isConvertedToRealSizes;
+    }
+
+    public void setConvertedToRealSizes(boolean convertedToRealSizes) {
+        isConvertedToRealSizes = convertedToRealSizes;
+    }
+
+    public Boolean isRectangular() {
+        return rectangular;
+    }
+
     @Override
     public String toString() {
         return "Panel{" +
@@ -304,9 +317,5 @@ public class Panel {
                 ", relatedMaterials=" + relatedMaterials +
                 ", customProperties=" + customProperties +
                 '}';
-    }
-
-    public Boolean isRectangular() {
-        return rectangular;
     }
 }
