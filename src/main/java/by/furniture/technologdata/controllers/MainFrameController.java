@@ -463,7 +463,7 @@ public class MainFrameController implements BazisXMLTags {
         techEdgeDataArrayList.addAll(overallEdgeLength(panelArrayList));
     }
 
-    void showUnsupportedPanels(ArrayList<Panel> panelsArrayList) { //TODO panels, that has oversize of list
+    void showUnsupportedPanels(ArrayList<Panel> panelsArrayList) {
         ArrayList<Panel> selectedPanels = panelsBySelectedMaterial(panelsArrayList, mainMaterialCheckBoxes);
         for (Panel p : selectedPanels) {
             if (materialDBList.containsKey(p.getMainMaterial().getNomination())) {

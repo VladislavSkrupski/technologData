@@ -3,6 +3,7 @@ package by.furniture.technologdata;
 import by.furniture.technologdata.classes.bazisXMLClasses.*;
 import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import by.furniture.technologdata.classes.techClasses.MaterialDB;
+import by.furniture.technologdata.enums.Orientation;
 import by.furniture.technologdata.interfaces.BazisXMLTags;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -1047,6 +1048,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         panel.setEdgeLists(edgeLists);
         panel.setFacingSurfaces(facingSurfacesList);
+        setRealLengthAndWidth(panel);
         return panel;
     }
 
@@ -1120,8 +1122,27 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         // }
         return materialDBS;
     }
-    private static Panel setRealLengthAndWidth(Panel panel){//TODO set real length and width
 
-        return panel;
+    private static void setRealLengthAndWidth(Panel panel) {
+        float x = panel.getLength(), y = panel.getWidth();
+        float xWithoutEdge = panel.getPartLengthWithoutEdging(), yWithoutEdge = panel.getPartWidthWithoutEdging();
+        float xFinished = panel.getFinishedPartLength(), yFinished = panel.getPartWidthWithoutEdging();
+        Orientation orientation = Orientation.UNDEFINED;
+        for (Orientation o : Orientation.values()) {
+            if (panel.getOrientationOfTexture().equals(o.getValue()))
+                orientation = o;
+        }
+        switch (orientation) {
+            case HORIZONTAL -> {
+            }
+            case VERTICAL, UNDEFINED -> {
+                panel.setLength(y);
+                panel.setWidth(x);
+                panel.setPartLengthWithoutEdging(yWithoutEdge);
+                panel.setPartWidthWithoutEdging(xWithoutEdge);
+                panel.setFinishedPartLength(yFinished);
+                panel.setFinishedPartWidth(xFinished);
+            }
+        }
     }
 }
