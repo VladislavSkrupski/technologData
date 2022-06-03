@@ -59,20 +59,14 @@ public class MaterialDBViewController {
 
     @FXML
     private void onShowAddForm() {
-        String str = "";
-        showAddMaterialDBForm(str);
+        showAddMaterialDBForm("");
     }
 
     @FXML
     private void onEditInExcelButtonClick() {
         StartPointLauncher startPointLauncher = StartPointLauncher.getStartPointLauncher();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("materialDB file", "materialDB.xls"));
-        fileChooser.setInitialDirectory(new File(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB()));
-        File selectedFile = fileChooser.showOpenDialog(editInExcelButton.getScene().getWindow());
-        if (selectedFile != null) {
-            startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());
-        }
+        File selectedFile = new File(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB() + "\\materialDB.xls");
+        startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());
     }
 
     private void setMaterialDBTable() {

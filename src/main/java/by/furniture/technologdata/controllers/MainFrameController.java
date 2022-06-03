@@ -348,12 +348,9 @@ public class MainFrameController implements BazisXMLTags {
             HSSFRow totalProductionEdgeLengthRow = hssfSheet.createRow(rowTempPoint);
             totalProductionEdgeLengthRow.createCell(0).setCellValue(fullEdgeLengthLabel.getText());
             totalProductionEdgeLengthRow.getCell(0).setCellStyle(dataCellStyle);
-
-            hssfSheet.autoSizeColumn((short) 0);
-            hssfSheet.autoSizeColumn((short) 1);
-            hssfSheet.autoSizeColumn((short) 2);
-            hssfSheet.autoSizeColumn((short) 3);
-            hssfSheet.autoSizeColumn((short) 4);
+            for (short i = 0; i < 5; i++) {
+                hssfSheet.autoSizeColumn(i);
+            }
             try (FileOutputStream outputStream = new FileOutputStream(file.getAbsolutePath())) {
                 hssfWorkbook.write(outputStream);
                 hssfWorkbook.close();

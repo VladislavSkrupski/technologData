@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -19,9 +20,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class StartPointLauncher extends Application implements BazisXMLTags {
@@ -83,23 +82,11 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         for (Node child : childNodes) {
             switch (child.getNodeName()) {
-                case OBJECT_TYPE: {
-                    panel.setObjectType(child.getTextContent());
-                    break;
-                }
-                case NOMINATION: {
-                    panel.setNomination(child.getTextContent());
-                    break;
-                }
-                case CODE: {
-                    panel.setCode(child.getTextContent());
-                    break;
-                }
-                case CODE_OF_DETAIL: {
-                    panel.setCodeOfDetail(child.getTextContent());
-                    break;
-                }
-                case ADDITIONAL_MATERIALS: {
+                case OBJECT_TYPE -> panel.setObjectType(child.getTextContent());
+                case NOMINATION -> panel.setNomination(child.getTextContent());
+                case CODE -> panel.setCode(child.getTextContent());
+                case CODE_OF_DETAIL -> panel.setCodeOfDetail(child.getTextContent());
+                case ADDITIONAL_MATERIALS -> {
                     if (child.hasChildNodes()) {
                         NodeList additionalMaterials = child.getChildNodes();
                         ArrayList<AdditionalMaterial> materialArrayList = new ArrayList<>();
@@ -110,22 +97,10 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < additionalMaterial.getLength(); b++) {
                                     if (additionalMaterial.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (additionalMaterial.item(b).getNodeName()) {
-                                            case ARTICLE: {
-                                                material.setArticle(additionalMaterial.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case NOMINATION: {
-                                                material.setNomination(additionalMaterial.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case QUANTITY: {
-                                                material.setAmount(Float.parseFloat(additionalMaterial.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case UNIT: {
-                                                material.setUnit(additionalMaterial.item(b).getTextContent());
-                                                break;
-                                            }
+                                            case ARTICLE -> material.setArticle(additionalMaterial.item(b).getTextContent());
+                                            case NOMINATION -> material.setNomination(additionalMaterial.item(b).getTextContent());
+                                            case QUANTITY -> material.setAmount(Float.parseFloat(additionalMaterial.item(b).getTextContent()));
+                                            case UNIT -> material.setUnit(additionalMaterial.item(b).getTextContent());
                                         }
                                     }
                                 }
@@ -136,65 +111,22 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setAdditionalMaterials(null);
                     }
-                    break;
                 }
-                case LENGTH: {
-                    panel.setLength(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case WIDTH: {
-                    panel.setWidth(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case PART_LENGTH_WITHOUT_EDGING: {
-                    panel.setPartLengthWithoutEdging(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case PART_WIDTH_WITHOUT_EDGING: {
-                    panel.setPartWidthWithoutEdging(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case FINISHED_PART_LENGTH: {
-                    panel.setFinishedPartLength(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case FINISHED_PART_WIDTH: {
-                    panel.setFinishedPartWidth(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case OVERALL_THICKNESS: {
-                    panel.setOverallThickness(Float.parseFloat(child.getTextContent()));
-                    break;
-                }
-                case QUANTITY: {
-                    panel.setAmount(Integer.parseInt(child.getTextContent()));
-                    break;
-                }
-                case POSITION: {
-                    panel.setPosition(child.getTextContent());
-                    break;
-                }
-                case DESIGNATION: {
-                    panel.setDesignation(child.getTextContent());
-                    break;
-                }
-                case RECTANGULAR: {
-                    panel.setRectangular(child.getTextContent().equals("Y"));
-                    break;
-                }
-                case FRONT_SIDE: {
-                    panel.setFrontSide(child.getTextContent());
-                    break;
-                }
-                case SIDE: {
-                    panel.setSide(child.getTextContent());
-                    break;
-                }
-                case ORIENTATION_OF_TEXTURE: {
-                    panel.setOrientationOfTexture(child.getTextContent());
-                    break;
-                }
-                case EDGE_LIST_1: {
+                case LENGTH -> panel.setLength(Float.parseFloat(child.getTextContent()));
+                case WIDTH -> panel.setWidth(Float.parseFloat(child.getTextContent()));
+                case PART_LENGTH_WITHOUT_EDGING -> panel.setPartLengthWithoutEdging(Float.parseFloat(child.getTextContent()));
+                case PART_WIDTH_WITHOUT_EDGING -> panel.setPartWidthWithoutEdging(Float.parseFloat(child.getTextContent()));
+                case FINISHED_PART_LENGTH -> panel.setFinishedPartLength(Float.parseFloat(child.getTextContent()));
+                case FINISHED_PART_WIDTH -> panel.setFinishedPartWidth(Float.parseFloat(child.getTextContent()));
+                case OVERALL_THICKNESS -> panel.setOverallThickness(Float.parseFloat(child.getTextContent()));
+                case QUANTITY -> panel.setAmount(Integer.parseInt(child.getTextContent()));
+                case POSITION -> panel.setPosition(child.getTextContent());
+                case DESIGNATION -> panel.setDesignation(child.getTextContent());
+                case RECTANGULAR -> panel.setRectangular(child.getTextContent().equals("Y"));
+                case FRONT_SIDE -> panel.setFrontSide(child.getTextContent());
+                case SIDE -> panel.setSide(child.getTextContent());
+                case ORIENTATION_OF_TEXTURE -> panel.setOrientationOfTexture(child.getTextContent());
+                case EDGE_LIST_1 -> {
                     if (child.hasChildNodes()) {
                         NodeList edgesNodes = child.getChildNodes();
                         ArrayList<Edge> edges = new ArrayList<>();
@@ -205,30 +137,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < edgesNode.getLength(); b++) {
                                     if (edgesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (edgesNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                edge.setNomination(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                edge.setCode(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DESIGNATION: {
-                                                edge.setDesignation(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
+                                            case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
+                                            case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
+                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
                                 }
@@ -239,9 +153,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         edgeLists.get(0).clear();
                     }
-                    break;
                 }
-                case EDGE_LIST_2: {
+                case EDGE_LIST_2 -> {
                     if (child.hasChildNodes()) {
                         NodeList edgesNodes = child.getChildNodes();
                         ArrayList<Edge> edges = new ArrayList<>();
@@ -252,30 +165,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < edgesNode.getLength(); b++) {
                                     if (edgesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (edgesNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                edge.setNomination(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                edge.setCode(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DESIGNATION: {
-                                                edge.setDesignation(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
+                                            case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
+                                            case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
+                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
                                 }
@@ -286,9 +181,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         edgeLists.get(1).clear();
                     }
-                    break;
                 }
-                case EDGE_LIST_3: {
+                case EDGE_LIST_3 -> {
                     if (child.hasChildNodes()) {
                         NodeList edgesNodes = child.getChildNodes();
                         ArrayList<Edge> edges = new ArrayList<>();
@@ -299,30 +193,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < edgesNode.getLength(); b++) {
                                     if (edgesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (edgesNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                edge.setNomination(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                edge.setCode(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DESIGNATION: {
-                                                edge.setDesignation(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
+                                            case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
+                                            case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
+                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
                                 }
@@ -333,9 +209,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         edgeLists.get(2).clear();
                     }
-                    break;
                 }
-                case EDGE_LIST_4: {
+                case EDGE_LIST_4 -> {
                     if (child.hasChildNodes()) {
                         NodeList edgesNodes = child.getChildNodes();
                         ArrayList<Edge> edges = new ArrayList<>();
@@ -346,30 +221,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < edgesNode.getLength(); b++) {
                                     if (edgesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (edgesNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                edge.setNomination(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                edge.setCode(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DESIGNATION: {
-                                                edge.setDesignation(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
+                                            case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
+                                            case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
+                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
                                 }
@@ -380,9 +237,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         edgeLists.get(3).clear();
                     }
-                    break;
                 }
-                case LIST_OF_EDGES_WATCH_DRAWING: {
+                case LIST_OF_EDGES_WATCH_DRAWING -> {
                     if (child.hasChildNodes()) {
                         NodeList edgesNodes = child.getChildNodes();
                         ArrayList<Edge> edges = new ArrayList<>();
@@ -393,30 +249,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < edgesNode.getLength(); b++) {
                                     if (edgesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (edgesNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                edge.setNomination(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                edge.setCode(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DESIGNATION: {
-                                                edge.setDesignation(edgesNode.item(b).getTextContent());
-                                                break;
-                                            }
+                                            case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
+                                            case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
+                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
                                 }
@@ -427,9 +265,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         edgeLists.get(4).clear();
                     }
-                    break;
                 }
-                case HOLES: {
+                case HOLES -> {
                     if (child.hasChildNodes()) {
                         NodeList holesNodes = child.getChildNodes();
                         ArrayList<Hole> holes = new ArrayList<>();
@@ -440,42 +277,15 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < holesNode.getLength(); b++) {
                                     if (holesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (holesNode.item(b).getNodeName()) {
-                                            case POSITION_X: {
-                                                hole.setPositionX(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case POSITION_Y: {
-                                                hole.setPositionY(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case POSITION_Z: {
-                                                hole.setPositionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DIAMETER: {
-                                                hole.setDiameter(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case TYPE: {
-                                                hole.setType(holesNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case DEPTH: {
-                                                hole.setDepth(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DIRECTION_X: {
-                                                hole.setDirectionX(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DIRECTION_Y: {
-                                                hole.setDirectionY(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DIRECTION_Z: {
-                                                hole.setDirectionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                                break;
-                                            }
+                                            case POSITION_X -> hole.setPositionX(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case POSITION_Y -> hole.setPositionY(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case POSITION_Z -> hole.setPositionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIAMETER -> hole.setDiameter(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case TYPE -> hole.setType(holesNode.item(b).getTextContent());
+                                            case DEPTH -> hole.setDepth(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIRECTION_X -> hole.setDirectionX(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIRECTION_Y -> hole.setDirectionY(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIRECTION_Z -> hole.setDirectionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -486,91 +296,33 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setHoles(null);
                     }
-                    break;
                 }
-                case PANEL_TYPE: {
-                    panel.setPanelType(child.getTextContent());
-                    break;
-                }
-                case MAIN_MATERIAL: {
+                case PANEL_TYPE -> panel.setPanelType(child.getTextContent());
+                case MAIN_MATERIAL -> {
                     if (child.hasChildNodes()) {
                         NodeList mainMaterialNodes = child.getChildNodes();
                         MainMaterial mainMaterial = new MainMaterial();
                         for (int a = 0; a < mainMaterialNodes.getLength(); a++) {
                             if (mainMaterialNodes.item(a).getNodeType() != Node.TEXT_NODE) {
                                 switch (mainMaterialNodes.item(a).getNodeName()) {
-                                    case ID: {
-                                        mainMaterial.setId(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case NOMINATION: {
-                                        mainMaterial.setNomination(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case CODE: {
-                                        mainMaterial.setCode(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case TYPE: {
-                                        mainMaterial.setType(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case QUANTITY: {
-                                        mainMaterial.setAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case QUANTITY_FROM_MODEL: {
-                                        mainMaterial.setAmountFromModel(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case QUANTITY_BY_ASSOCIATE: {
-                                        mainMaterial.setAmountByAssociate(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case QUANTITY_BEFORE_ROUNDING: {
-                                        mainMaterial.setAmountBeforeRounding(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case UNIT: {
-                                        mainMaterial.setUnit(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case COST: {
-                                        mainMaterial.setCost(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case PRICE: {
-                                        mainMaterial.setPrice(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case COEFFICIENT: {
-                                        mainMaterial.setCoefficient(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case THICKNESS: {
-                                        mainMaterial.setThickness(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case ROUNDING_METHOD: {
-                                        mainMaterial.setRoundingMethod(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case ROUNDING_AMOUNT: {
-                                        mainMaterial.setRoundingAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                        break;
-                                    }
-                                    case M_CLASS: {
-                                        mainMaterial.setmClass(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case SYNC_ID: {
-                                        mainMaterial.setSyncId(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
-                                    case NOTE: {
-                                        mainMaterial.setNote(mainMaterialNodes.item(a).getTextContent());
-                                        break;
-                                    }
+                                    case ID -> mainMaterial.setId(mainMaterialNodes.item(a).getTextContent());
+                                    case NOMINATION -> mainMaterial.setNomination(mainMaterialNodes.item(a).getTextContent());
+                                    case CODE -> mainMaterial.setCode(mainMaterialNodes.item(a).getTextContent());
+                                    case TYPE -> mainMaterial.setType(mainMaterialNodes.item(a).getTextContent());
+                                    case QUANTITY -> mainMaterial.setAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY_FROM_MODEL -> mainMaterial.setAmountFromModel(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY_BY_ASSOCIATE -> mainMaterial.setAmountByAssociate(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY_BEFORE_ROUNDING -> mainMaterial.setAmountBeforeRounding(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case UNIT -> mainMaterial.setUnit(mainMaterialNodes.item(a).getTextContent());
+                                    case COST -> mainMaterial.setCost(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case PRICE -> mainMaterial.setPrice(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case COEFFICIENT -> mainMaterial.setCoefficient(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case THICKNESS -> mainMaterial.setThickness(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case ROUNDING_METHOD -> mainMaterial.setRoundingMethod(mainMaterialNodes.item(a).getTextContent());
+                                    case ROUNDING_AMOUNT -> mainMaterial.setRoundingAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case M_CLASS -> mainMaterial.setmClass(mainMaterialNodes.item(a).getTextContent());
+                                    case SYNC_ID -> mainMaterial.setSyncId(mainMaterialNodes.item(a).getTextContent());
+                                    case NOTE -> mainMaterial.setNote(mainMaterialNodes.item(a).getTextContent());
                                 }
                             }
                         }
@@ -578,9 +330,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setMainMaterial(null);
                     }
-                    break;
                 }
-                case GROOVE_LIST: {
+                case GROOVE_LIST -> {
                     if (child.hasChildNodes()) {
                         NodeList groovesNodes = child.getChildNodes();
                         ArrayList<Groove> grooves = new ArrayList<>();
@@ -591,34 +342,13 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < grooveNode.getLength(); b++) {
                                     if (grooveNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (grooveNode.item(b).getNodeName()) {
-                                            case TYPE: {
-                                                groove.setType(grooveNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case TITLE: {
-                                                groove.setTitle(grooveNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case DESIGNATION: {
-                                                groove.setDesignation(grooveNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case QUANTITY: {
-                                                groove.setAmount(Integer.parseInt(grooveNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                groove.setLength(Float.parseFloat(grooveNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                groove.setWidth(Float.parseFloat(grooveNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case DEPTH: {
-                                                groove.setDepth(Float.parseFloat(grooveNode.item(b).getTextContent()));
-                                                break;
-                                            }
+                                            case TYPE -> groove.setType(grooveNode.item(b).getTextContent());
+                                            case TITLE -> groove.setTitle(grooveNode.item(b).getTextContent());
+                                            case DESIGNATION -> groove.setDesignation(grooveNode.item(b).getTextContent());
+                                            case QUANTITY -> groove.setAmount(Integer.parseInt(grooveNode.item(b).getTextContent()));
+                                            case LENGTH -> groove.setLength(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                            case WIDTH -> groove.setWidth(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                            case DEPTH -> groove.setDepth(Float.parseFloat(grooveNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -629,9 +359,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setGrooves(null);
                     }
-                    break;
                 }
-                case FACING_SURFACE_1: {
+                case FACING_SURFACE_1 -> {
                     if (child.hasChildNodes()) {
                         NodeList facingSurfaceNodes = child.getChildNodes();
                         ArrayList<FacingSurface> facingSurfaces = new ArrayList<>();
@@ -642,50 +371,17 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < facingSurfaceNode.getLength(); b++) {
                                     if (facingSurfaceNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (facingSurfaceNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case PART_LENGTH_WITHOUT_EDGING: {
-                                                facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case PART_WIDTH_WITHOUT_EDGING: {
-                                                facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case FINISHED_PART_LENGTH: {
-                                                facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case FINISHED_PART_WIDTH: {
-                                                facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case ORIENTATION_OF_TEXTURE: {
-                                                facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case QUANTITY: {
-                                                facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
+                                            case NOMINATION -> facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
+                                            case CODE -> facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
+                                            case LENGTH -> facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case WIDTH -> facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_LENGTH_WITHOUT_EDGING -> facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_WIDTH_WITHOUT_EDGING -> facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_LENGTH -> facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_WIDTH -> facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case ORIENTATION_OF_TEXTURE -> facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
+                                            case THICKNESS -> facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case QUANTITY -> facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -696,9 +392,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         facingSurfacesList.get(0).clear();
                     }
-                    break;
                 }
-                case FACING_SURFACE_2: {
+                case FACING_SURFACE_2 -> {
                     if (child.hasChildNodes()) {
                         NodeList facingSurfaceNodes = child.getChildNodes();
                         ArrayList<FacingSurface> facingSurfaces = new ArrayList<>();
@@ -709,50 +404,17 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < facingSurfaceNode.getLength(); b++) {
                                     if (facingSurfaceNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (facingSurfaceNode.item(b).getNodeName()) {
-                                            case NOMINATION: {
-                                                facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case CODE: {
-                                                facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case LENGTH: {
-                                                facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case WIDTH: {
-                                                facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case PART_LENGTH_WITHOUT_EDGING: {
-                                                facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case PART_WIDTH_WITHOUT_EDGING: {
-                                                facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case FINISHED_PART_LENGTH: {
-                                                facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case FINISHED_PART_WIDTH: {
-                                                facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case ORIENTATION_OF_TEXTURE: {
-                                                facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
-                                                break;
-                                            }
-                                            case THICKNESS: {
-                                                facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
-                                            case QUANTITY: {
-                                                facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
-                                                break;
-                                            }
+                                            case NOMINATION -> facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
+                                            case CODE -> facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
+                                            case LENGTH -> facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case WIDTH -> facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_LENGTH_WITHOUT_EDGING -> facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_WIDTH_WITHOUT_EDGING -> facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_LENGTH -> facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_WIDTH -> facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case ORIENTATION_OF_TEXTURE -> facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
+                                            case THICKNESS -> facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case QUANTITY -> facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -763,15 +425,14 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         facingSurfacesList.get(1).clear();
                     }
-                    break;
                 }
-                case ORDER_OF_FACING_SURFACE: {
+                case ORDER_OF_FACING_SURFACE -> {
                     if (child.hasChildNodes()) {
                         NodeList orderNodes = child.getChildNodes();
                         for (int a = 0; a < orderNodes.getLength(); a++) {
                             if (orderNodes.item(a).getNodeType() != Node.TEXT_NODE) {
                                 switch (orderNodes.item(a).getNodeName()) {
-                                    case ABOVE: {
+                                    case ABOVE -> {
                                         if (orderNodes.item(a).hasChildNodes()) {
                                             NodeList orderNode = orderNodes.item(a).getChildNodes();
                                             ArrayList<OrderOfFacingSurface> aboveOrderList = new ArrayList<>();
@@ -800,9 +461,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         } else {
                                             orderOfFacingSurfaceList.get(0).clear();
                                         }
-                                        break;
                                     }
-                                    case BOTTOM: {
+                                    case BOTTOM -> {
                                         if (orderNodes.item(a).hasChildNodes()) {
                                             NodeList orderNode = orderNodes.item(a).getChildNodes();
                                             ArrayList<OrderOfFacingSurface> bottomOrderList = new ArrayList<>();
@@ -831,7 +491,6 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         } else {
                                             orderOfFacingSurfaceList.get(1).clear();
                                         }
-                                        break;
                                     }
                                 }
 
@@ -841,9 +500,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setOrderOfFacingSurfaces(null);
                     }
-                    break;
                 }
-                case LIST_OF_OPERATIONS: {
+                case LIST_OF_OPERATIONS -> {
                     if (child.hasChildNodes()) {
                         NodeList operationsNodes = child.getChildNodes();
                         ArrayList<PieceworkOperation> pieceworkOperations = new ArrayList<>();
@@ -916,9 +574,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setPieceworkOperations(null);
                     }
-                    break;
                 }
-                case RELATED_MATERIALS: {
+                case RELATED_MATERIALS -> {
                     if (child.hasChildNodes()) {
                         NodeList relatedMaterialNodes = child.getChildNodes();
                         ArrayList<RelatedMaterial> relatedMaterials = new ArrayList<>();
@@ -1007,9 +664,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setRelatedMaterials(null);
                     }
-                    break;
                 }
-                case CUSTOM_PROPERTIES: {
+                case CUSTOM_PROPERTIES -> {
                     if (child.hasChildNodes()) {
                         NodeList customPropertiesNodes = child.getChildNodes();
                         ArrayList<CustomProperty> customProperties = new ArrayList<>();
@@ -1038,12 +694,8 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                     } else {
                         panel.setCustomProperties(null);
                     }
-                    break;
                 }
-                default: {
-                    System.out.println("Есть нераспознанные поля " + child.getNodeName());
-                    break;
-                }
+                default -> System.out.println("Есть нераспознанные поля " + child.getNodeName());
             }
         }
         panel.setEdgeLists(edgeLists);
@@ -1080,19 +732,27 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
     private static HashMap<String, MaterialDB> getMaterialDBList() {
         HashMap<String, MaterialDB> materialDBS = new HashMap<>();
         FileInputStream fileInputStream = null;
+        String path = ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB();
         try {
-            String path = ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB();
             fileInputStream = new FileInputStream(path + "\\materialDB.xls");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();//TODO search materialDB.xls or create new
+            createMaterialDBFile();
+            try {
+                fileInputStream = new FileInputStream(path+"\\materialDB.xls");//TODO search materialDB.xls or create new
+            } catch (FileNotFoundException ex) {
+               Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Ошибка");
+                alert.setHeaderText(null);
+                alert.setContentText("Не удалось создать файл materialDB.xls");
+                alert.showAndWait();
+            }
         }
         try {
-            assert fileInputStream != null;
-            try (POIFSFileSystem materialDBFile = new POIFSFileSystem(fileInputStream)) {
+            try (POIFSFileSystem materialDBFile = new POIFSFileSystem(Objects.requireNonNull(fileInputStream))) {
                 HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
                 HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
-                for (int i = 1; i < materialDBSheet.getLastRowNum() + 1; i++) {
-                    HSSFRow row = materialDBSheet.getRow(i);
+                for (int i = 0; i < materialDBSheet.getLastRowNum(); i++) {
+                    HSSFRow row = materialDBSheet.getRow(i+1);
                     HSSFCell articleCell = row.getCell(0);
                     HSSFCell nameCell = row.getCell(1);
                     HSSFCell listLengthCell = row.getCell(2);
@@ -1119,8 +779,44 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
             e.printStackTrace();
             return null;
         }
-        // }
+        try {
+            fileInputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return materialDBS;
+    }
+
+    private static void createMaterialDBFile() {//TODO create materialDB.xls
+        String path = ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB();
+        File file = new File(path + "\\materialDB.xls");
+        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+        HSSFSheet hssfSheet = hssfWorkbook.createSheet("materialDB");
+        HSSFRow tittleRow = hssfSheet.createRow(0);
+        tittleRow.createCell(0).setCellValue("Артикул материала");
+        tittleRow.createCell(1).setCellValue("Наименование материала");
+        tittleRow.createCell(2).setCellValue("Длина");
+        tittleRow.createCell(3).setCellValue("Ширина");
+        tittleRow.createCell(4).setCellValue("Толщина");
+        for (short i = 0; i < 5; i++) {
+            hssfSheet.autoSizeColumn(i);
+        }
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            hssfWorkbook.write(outputStream);
+            hssfWorkbook.close();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Информация");
+            alert.setHeaderText(null);
+            alert.setContentText("Файл materialDB.xls создан");
+            alert.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Не удалось создать файл materialDB.xls");
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -1142,8 +838,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         }
         if (!panel.isConvertedToRealSizes()) {
             switch (orientation) {
-                case HORIZONTAL -> {
-                }
+                case HORIZONTAL -> panel.setConvertedToRealSizes(true);
                 case VERTICAL, UNDEFINED -> {
                     panel.setLength(y);
                     panel.setWidth(x);
