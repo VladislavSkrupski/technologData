@@ -54,6 +54,8 @@ public class MainFrameController implements BazisXMLTags {
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
 
+    private final ArrayList<String> absentMaterials = new ArrayList<>();
+
     @FXML
     private MenuItem openFileMenuItem;
     @FXML
@@ -71,7 +73,7 @@ public class MainFrameController implements BazisXMLTags {
     @FXML
     private Label productDeveloperLabel;
     @FXML
-    private VBox materialCheckList;
+    private ListView<CheckBox> materialCheckList;
     @FXML
     private TableView<TechMaterialData> techMaterialTable;
     @FXML
@@ -170,7 +172,7 @@ public class MainFrameController implements BazisXMLTags {
                 mainMaterials.add(panel.getMainMaterial().getNomination());
             }
             mainMaterialCheckBoxes.clear();
-            materialCheckList.getChildren().clear();
+            materialCheckList.getItems().clear();
             productOrderLabel.setText(product.getOrder());
             productNominationLabel.setText(product.getNomination());
             productArticleLabel.setText(product.getArticle());
@@ -180,10 +182,12 @@ public class MainFrameController implements BazisXMLTags {
             }
             for (CheckBox chk : mainMaterialCheckBoxes) {
                 chk.setSelected(true);
-                chk.setPadding(new Insets(5, 5, 5, 5));
+                //chk.setPadding(new Insets(5, 5, 5, 5));
                 chk.setOnAction(actionEvent -> resetTableData(panels));
-                materialCheckList.getChildren().add(chk);
+                materialCheckList.getItems().add(chk);
             }
+            materialCheckList.setItems(FXCollections.observableArrayList(mainMaterialCheckBoxes));
+//TODO продолжить работу с листами
             setDataToArrayList(panels);
             setMaterialTable(techMaterialDataArrayList);
             exportButton.setDisable(false);
@@ -622,7 +626,11 @@ public class MainFrameController implements BazisXMLTags {
                             square.setScale(0, RoundingMode.CEILING).toString()));
                 }
             } else {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                absentMaterials.add(str);
+            }
+
+
+                /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 ButtonType okButton = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
                 ButtonType cancelButton = new ButtonType("Игнорировать", ButtonBar.ButtonData.CANCEL_CLOSE);
                 alert.setTitle("Отсутствующий материал");
@@ -632,8 +640,10 @@ public class MainFrameController implements BazisXMLTags {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == okButton) {
                     showAddMaterialDBForm(str);
-                }
-            }
+                } else{
+                    //TODO ignored materials to list and stop asking about this shit
+                }*/
+
         }
         return materialsSquareData;
     }
@@ -710,6 +720,5 @@ public class MainFrameController implements BazisXMLTags {
         });
         return panelsByMaterialArrayList;
     }*/
-
 }
 

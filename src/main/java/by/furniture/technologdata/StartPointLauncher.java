@@ -58,7 +58,11 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         launch();
     }
 
+    /**
+     * Перечитывает базу материалов из файла materialDB.xls
+     */
     public static void refreshMaterialDB() {
+        materialDBList.clear();
         materialDBList.putAll(getMaterialDBList());
     }
 
@@ -97,9 +101,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < additionalMaterial.getLength(); b++) {
                                     if (additionalMaterial.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (additionalMaterial.item(b).getNodeName()) {
-                                            case ARTICLE -> material.setArticle(additionalMaterial.item(b).getTextContent());
-                                            case NOMINATION -> material.setNomination(additionalMaterial.item(b).getTextContent());
-                                            case QUANTITY -> material.setAmount(Float.parseFloat(additionalMaterial.item(b).getTextContent()));
+                                            case ARTICLE ->
+                                                    material.setArticle(additionalMaterial.item(b).getTextContent());
+                                            case NOMINATION ->
+                                                    material.setNomination(additionalMaterial.item(b).getTextContent());
+                                            case QUANTITY ->
+                                                    material.setAmount(Float.parseFloat(additionalMaterial.item(b).getTextContent()));
                                             case UNIT -> material.setUnit(additionalMaterial.item(b).getTextContent());
                                         }
                                     }
@@ -114,8 +121,10 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                 }
                 case LENGTH -> panel.setLength(Float.parseFloat(child.getTextContent()));
                 case WIDTH -> panel.setWidth(Float.parseFloat(child.getTextContent()));
-                case PART_LENGTH_WITHOUT_EDGING -> panel.setPartLengthWithoutEdging(Float.parseFloat(child.getTextContent()));
-                case PART_WIDTH_WITHOUT_EDGING -> panel.setPartWidthWithoutEdging(Float.parseFloat(child.getTextContent()));
+                case PART_LENGTH_WITHOUT_EDGING ->
+                        panel.setPartLengthWithoutEdging(Float.parseFloat(child.getTextContent()));
+                case PART_WIDTH_WITHOUT_EDGING ->
+                        panel.setPartWidthWithoutEdging(Float.parseFloat(child.getTextContent()));
                 case FINISHED_PART_LENGTH -> panel.setFinishedPartLength(Float.parseFloat(child.getTextContent()));
                 case FINISHED_PART_WIDTH -> panel.setFinishedPartWidth(Float.parseFloat(child.getTextContent()));
                 case OVERALL_THICKNESS -> panel.setOverallThickness(Float.parseFloat(child.getTextContent()));
@@ -139,9 +148,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         switch (edgesNode.item(b).getNodeName()) {
                                             case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
                                             case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
-                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case LENGTH ->
+                                                    edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS ->
+                                                    edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
                                             case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
@@ -167,9 +179,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         switch (edgesNode.item(b).getNodeName()) {
                                             case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
                                             case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
-                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case LENGTH ->
+                                                    edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS ->
+                                                    edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
                                             case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
@@ -195,9 +210,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         switch (edgesNode.item(b).getNodeName()) {
                                             case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
                                             case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
-                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case LENGTH ->
+                                                    edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS ->
+                                                    edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
                                             case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
@@ -223,9 +241,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         switch (edgesNode.item(b).getNodeName()) {
                                             case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
                                             case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
-                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case LENGTH ->
+                                                    edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS ->
+                                                    edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
                                             case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
@@ -251,9 +272,12 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         switch (edgesNode.item(b).getNodeName()) {
                                             case NOMINATION -> edge.setNomination(edgesNode.item(b).getTextContent());
                                             case CODE -> edge.setCode(edgesNode.item(b).getTextContent());
-                                            case LENGTH -> edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case WIDTH -> edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
-                                            case THICKNESS -> edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case LENGTH ->
+                                                    edge.setLength(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    edge.setWidth(Float.parseFloat(edgesNode.item(b).getTextContent()));
+                                            case THICKNESS ->
+                                                    edge.setThickness(Float.parseFloat(edgesNode.item(b).getTextContent()));
                                             case DESIGNATION -> edge.setDesignation(edgesNode.item(b).getTextContent());
                                         }
                                     }
@@ -277,15 +301,23 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < holesNode.getLength(); b++) {
                                     if (holesNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (holesNode.item(b).getNodeName()) {
-                                            case POSITION_X -> hole.setPositionX(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                            case POSITION_Y -> hole.setPositionY(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                            case POSITION_Z -> hole.setPositionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                            case DIAMETER -> hole.setDiameter(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case POSITION_X ->
+                                                    hole.setPositionX(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case POSITION_Y ->
+                                                    hole.setPositionY(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case POSITION_Z ->
+                                                    hole.setPositionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIAMETER ->
+                                                    hole.setDiameter(Float.parseFloat(holesNode.item(b).getTextContent()));
                                             case TYPE -> hole.setType(holesNode.item(b).getTextContent());
-                                            case DEPTH -> hole.setDepth(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                            case DIRECTION_X -> hole.setDirectionX(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                            case DIRECTION_Y -> hole.setDirectionY(Float.parseFloat(holesNode.item(b).getTextContent()));
-                                            case DIRECTION_Z -> hole.setDirectionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DEPTH ->
+                                                    hole.setDepth(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIRECTION_X ->
+                                                    hole.setDirectionX(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIRECTION_Y ->
+                                                    hole.setDirectionY(Float.parseFloat(holesNode.item(b).getTextContent()));
+                                            case DIRECTION_Z ->
+                                                    hole.setDirectionZ(Float.parseFloat(holesNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -306,20 +338,31 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                             if (mainMaterialNodes.item(a).getNodeType() != Node.TEXT_NODE) {
                                 switch (mainMaterialNodes.item(a).getNodeName()) {
                                     case ID -> mainMaterial.setId(mainMaterialNodes.item(a).getTextContent());
-                                    case NOMINATION -> mainMaterial.setNomination(mainMaterialNodes.item(a).getTextContent());
+                                    case NOMINATION ->
+                                            mainMaterial.setNomination(mainMaterialNodes.item(a).getTextContent());
                                     case CODE -> mainMaterial.setCode(mainMaterialNodes.item(a).getTextContent());
                                     case TYPE -> mainMaterial.setType(mainMaterialNodes.item(a).getTextContent());
-                                    case QUANTITY -> mainMaterial.setAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case QUANTITY_FROM_MODEL -> mainMaterial.setAmountFromModel(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case QUANTITY_BY_ASSOCIATE -> mainMaterial.setAmountByAssociate(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case QUANTITY_BEFORE_ROUNDING -> mainMaterial.setAmountBeforeRounding(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY ->
+                                            mainMaterial.setAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY_FROM_MODEL ->
+                                            mainMaterial.setAmountFromModel(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY_BY_ASSOCIATE ->
+                                            mainMaterial.setAmountByAssociate(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case QUANTITY_BEFORE_ROUNDING ->
+                                            mainMaterial.setAmountBeforeRounding(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
                                     case UNIT -> mainMaterial.setUnit(mainMaterialNodes.item(a).getTextContent());
-                                    case COST -> mainMaterial.setCost(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case PRICE -> mainMaterial.setPrice(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case COEFFICIENT -> mainMaterial.setCoefficient(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case THICKNESS -> mainMaterial.setThickness(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
-                                    case ROUNDING_METHOD -> mainMaterial.setRoundingMethod(mainMaterialNodes.item(a).getTextContent());
-                                    case ROUNDING_AMOUNT -> mainMaterial.setRoundingAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case COST ->
+                                            mainMaterial.setCost(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case PRICE ->
+                                            mainMaterial.setPrice(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case COEFFICIENT ->
+                                            mainMaterial.setCoefficient(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case THICKNESS ->
+                                            mainMaterial.setThickness(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
+                                    case ROUNDING_METHOD ->
+                                            mainMaterial.setRoundingMethod(mainMaterialNodes.item(a).getTextContent());
+                                    case ROUNDING_AMOUNT ->
+                                            mainMaterial.setRoundingAmount(Float.parseFloat(mainMaterialNodes.item(a).getTextContent()));
                                     case M_CLASS -> mainMaterial.setmClass(mainMaterialNodes.item(a).getTextContent());
                                     case SYNC_ID -> mainMaterial.setSyncId(mainMaterialNodes.item(a).getTextContent());
                                     case NOTE -> mainMaterial.setNote(mainMaterialNodes.item(a).getTextContent());
@@ -344,11 +387,16 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                         switch (grooveNode.item(b).getNodeName()) {
                                             case TYPE -> groove.setType(grooveNode.item(b).getTextContent());
                                             case TITLE -> groove.setTitle(grooveNode.item(b).getTextContent());
-                                            case DESIGNATION -> groove.setDesignation(grooveNode.item(b).getTextContent());
-                                            case QUANTITY -> groove.setAmount(Integer.parseInt(grooveNode.item(b).getTextContent()));
-                                            case LENGTH -> groove.setLength(Float.parseFloat(grooveNode.item(b).getTextContent()));
-                                            case WIDTH -> groove.setWidth(Float.parseFloat(grooveNode.item(b).getTextContent()));
-                                            case DEPTH -> groove.setDepth(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                            case DESIGNATION ->
+                                                    groove.setDesignation(grooveNode.item(b).getTextContent());
+                                            case QUANTITY ->
+                                                    groove.setAmount(Integer.parseInt(grooveNode.item(b).getTextContent()));
+                                            case LENGTH ->
+                                                    groove.setLength(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    groove.setWidth(Float.parseFloat(grooveNode.item(b).getTextContent()));
+                                            case DEPTH ->
+                                                    groove.setDepth(Float.parseFloat(grooveNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -371,17 +419,28 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < facingSurfaceNode.getLength(); b++) {
                                     if (facingSurfaceNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (facingSurfaceNode.item(b).getNodeName()) {
-                                            case NOMINATION -> facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
-                                            case CODE -> facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
-                                            case LENGTH -> facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case WIDTH -> facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case PART_LENGTH_WITHOUT_EDGING -> facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case PART_WIDTH_WITHOUT_EDGING -> facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case FINISHED_PART_LENGTH -> facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case FINISHED_PART_WIDTH -> facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case ORIENTATION_OF_TEXTURE -> facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
-                                            case THICKNESS -> facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case QUANTITY -> facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
+                                            case NOMINATION ->
+                                                    facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
+                                            case CODE ->
+                                                    facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
+                                            case LENGTH ->
+                                                    facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_LENGTH_WITHOUT_EDGING ->
+                                                    facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_WIDTH_WITHOUT_EDGING ->
+                                                    facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_LENGTH ->
+                                                    facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_WIDTH ->
+                                                    facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case ORIENTATION_OF_TEXTURE ->
+                                                    facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
+                                            case THICKNESS ->
+                                                    facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case QUANTITY ->
+                                                    facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -404,17 +463,28 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                                 for (int b = 0; b < facingSurfaceNode.getLength(); b++) {
                                     if (facingSurfaceNode.item(b).getNodeType() != Node.TEXT_NODE) {
                                         switch (facingSurfaceNode.item(b).getNodeName()) {
-                                            case NOMINATION -> facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
-                                            case CODE -> facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
-                                            case LENGTH -> facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case WIDTH -> facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case PART_LENGTH_WITHOUT_EDGING -> facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case PART_WIDTH_WITHOUT_EDGING -> facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case FINISHED_PART_LENGTH -> facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case FINISHED_PART_WIDTH -> facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case ORIENTATION_OF_TEXTURE -> facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
-                                            case THICKNESS -> facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
-                                            case QUANTITY -> facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
+                                            case NOMINATION ->
+                                                    facingSurface.setNomination(facingSurfaceNode.item(b).getTextContent());
+                                            case CODE ->
+                                                    facingSurface.setCode(facingSurfaceNode.item(b).getTextContent());
+                                            case LENGTH ->
+                                                    facingSurface.setLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case WIDTH ->
+                                                    facingSurface.setWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_LENGTH_WITHOUT_EDGING ->
+                                                    facingSurface.setPartLengthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case PART_WIDTH_WITHOUT_EDGING ->
+                                                    facingSurface.setPartWidthWithoutEdging(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_LENGTH ->
+                                                    facingSurface.setFinishedPartLength(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case FINISHED_PART_WIDTH ->
+                                                    facingSurface.setFinishedPartWidth(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case ORIENTATION_OF_TEXTURE ->
+                                                    facingSurface.setOrientationOfTexture(facingSurfaceNode.item(b).getTextContent());
+                                            case THICKNESS ->
+                                                    facingSurface.setThickness(Float.parseFloat(facingSurfaceNode.item(b).getTextContent()));
+                                            case QUANTITY ->
+                                                    facingSurface.setAmount(Integer.parseInt(facingSurfaceNode.item(b).getTextContent()));
                                         }
                                     }
                                 }
@@ -725,7 +795,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
     }
 
     /**
-     * Загружает базу материалов из файла MaterialDB.xls
+     * Загружает базу материалов из файла MaterialDB.xls, если не находит - создаёт пустую
      *
      * @return возвращает HashMap объектов MaterialDB с ключами из наименования материала
      */
@@ -738,9 +808,9 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         } catch (FileNotFoundException e) {
             createMaterialDBFile();
             try {
-                fileInputStream = new FileInputStream(path+"\\materialDB.xls");//TODO search materialDB.xls or create new
+                fileInputStream = new FileInputStream(path + "\\materialDB.xls");
             } catch (FileNotFoundException ex) {
-               Alert alert = new Alert(Alert.AlertType.ERROR);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Ошибка");
                 alert.setHeaderText(null);
                 alert.setContentText("Не удалось создать файл materialDB.xls");
@@ -752,7 +822,7 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                 HSSFWorkbook materialDBBook = new HSSFWorkbook(materialDBFile);
                 HSSFSheet materialDBSheet = materialDBBook.getSheetAt(0);
                 for (int i = 0; i < materialDBSheet.getLastRowNum(); i++) {
-                    HSSFRow row = materialDBSheet.getRow(i+1);
+                    HSSFRow row = materialDBSheet.getRow(i + 1);
                     HSSFCell articleCell = row.getCell(0);
                     HSSFCell nameCell = row.getCell(1);
                     HSSFCell listLengthCell = row.getCell(2);
@@ -787,7 +857,10 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
         return materialDBS;
     }
 
-    private static void createMaterialDBFile() {//TODO create materialDB.xls
+    /**
+     * Создаёт пустую базу материалов MaterialDB.xls
+     */
+    private static void createMaterialDBFile() {
         String path = ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB();
         File file = new File(path + "\\materialDB.xls");
         HSSFWorkbook hssfWorkbook = new HSSFWorkbook();

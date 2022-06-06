@@ -47,10 +47,6 @@
             <items>
                 <MenuItem mnemonicParsing="false" onAction="#onPropertiesMenuItemClick" style="-fx-pref-width: 190px; -fx-font-size: 14px" text="Параметры" />
                 <MenuItem fx:id="dataBaseMenuItem" mnemonicParsing="false" onAction="#onDataBaseMenuItemClick" style="-fx-pref-width: 190px; -fx-font-size: 14px" text="База плитных материалов" />
-                <!--                <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px"-->
-                <!--                          text="Сохранить настройки"/>-->
-                <!--                <MenuItem mnemonicParsing="false" style="-fx-pref-width: 190px; -fx-font-size: 14px"-->
-                <!--                          text="Восстановить настройки"/>-->
             </items>
         </Menu>
     </MenuBar>
@@ -96,10 +92,32 @@
                 <Label fx:id="productArticleLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <Label fx:id="productDeveloperLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </GridPane>
-            <VBox fx:id="materialCheckList" fillWidth="false" prefHeight="397.0" prefWidth="350.0">
-
-            </VBox>
-            <Label fx:id="fullEdgeLengthLabel" alignment="CENTER" prefHeight="82.0" prefWidth="300.0">
+            <VBox fillWidth="false" prefHeight="397.0" prefWidth="350.0" VBox.vgrow="ALWAYS">
+            <children>
+               <Label text="Материалы:">
+                  <font>
+                     <Font name="System Bold" size="12.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets left="5.0" />
+                  </VBox.margin>
+               </Label>
+               <ListView fx:id="materialCheckList" prefWidth="350.0">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+               </ListView>
+               <Label text="Неизвестные материалы:">
+                  <font>
+                     <Font name="System Bold" size="12.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets left="5.0" />
+                  </VBox.margin>
+               </Label>
+               <ListView prefHeight="250.0" prefWidth="350.0" />
+            </children></VBox>
+            <Label fx:id="fullEdgeLengthLabel" alignment="CENTER" prefHeight="50.0" prefWidth="300.0">
                 <VBox.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </VBox.margin>
@@ -119,11 +137,11 @@
         <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
         </padding>
-      <Button fx:id="unsupportedPanelsButton" onAction="#onUnsupportedPanelsButtonClick" mnemonicParsing="false" prefHeight="35.0" prefWidth="200.0" text="Сверхгабаритные детали" textFill="#ff0707" visible="false">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Button>
+        <Button fx:id="unsupportedPanelsButton" mnemonicParsing="false" onAction="#onUnsupportedPanelsButtonClick" prefHeight="35.0" prefWidth="200.0" text="Сверхгабаритные детали" textFill="#ff0707" visible="false">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Button>
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onOpenFile" prefHeight="35.0" prefWidth="100.0" text="Импорт" HBox.hgrow="ALWAYS" />
         <Button fx:id="exportButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onExportToXLS" prefHeight="35.0" prefWidth="100.0" text="Экспорт" HBox.hgrow="ALWAYS" />
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onExitClick" prefHeight="35.0" prefWidth="100.0" text="Выход" HBox.hgrow="ALWAYS" />
