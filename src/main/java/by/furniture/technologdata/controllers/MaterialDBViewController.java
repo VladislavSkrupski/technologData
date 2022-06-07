@@ -23,6 +23,15 @@ public class MaterialDBViewController {
 
     private final HashMap<String, MaterialDB> materialDBS = new HashMap<>();
 
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button editInExcelButton;
+    @FXML
+    private TableView<MaterialDB> materialDBTableView;
+
     public MaterialDBViewController() {
         this.materialDBS.putAll(StartPointLauncher.materialDBList);
     }
@@ -36,24 +45,18 @@ public class MaterialDBViewController {
     }
 
     @FXML
-    private Button cancelButton;
-
-    @FXML
-    private Button addButton;
-
-    @FXML
-    private Button editInExcelButton;
-
-    @FXML
-    private TableView<MaterialDB> materialDBTableView;
-
-    @FXML
     void onCancelButtonClick() {
         materialDBViewStage.close();
     }
 
     @FXML
     void initialize() {
+        setMaterialDBTable();
+    }
+
+    @FXML
+    private void refreshMaterialDB() {
+        StartPointLauncher.refreshMaterialDB();
         setMaterialDBTable();
     }
 
@@ -68,6 +71,7 @@ public class MaterialDBViewController {
         File selectedFile = new File(ConfigurationProperties.getConfigurationProperties().getPathToMaterialDB() + "\\materialDB.xls");
         startPointLauncher.getHostServices().showDocument(selectedFile.getAbsolutePath());
     }
+
 
     private void setMaterialDBTable() {
         materialDBTableView.getColumns().clear();

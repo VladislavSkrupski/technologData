@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.MaterialDBViewController">
+<VBox prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.MaterialDBViewController">
    <children>
       <HBox alignment="CENTER">
          <VBox.margin>
@@ -15,7 +15,12 @@
                <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
             </HBox.margin>
          </Button>
-         <Button fx:id="addButton" onAction="#onShowAddForm" mnemonicParsing="false" text="Добавить">
+         <Button fx:id="addButton" mnemonicParsing="false" onAction="#onShowAddForm" text="Добавить">
+            <HBox.margin>
+               <Insets bottom="5.0" right="10.0" top="10.0" />
+            </HBox.margin>
+         </Button>
+         <Button onAction="#refreshMaterialDB" mnemonicParsing="false" text="Перечитать базу материалов">
             <HBox.margin>
                <Insets bottom="5.0" right="10.0" top="10.0" />
             </HBox.margin>
@@ -32,7 +37,7 @@
          </VBox.margin></TableView>
       <HBox alignment="CENTER_RIGHT" maxHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
-            <Button minWidth="75.0" mnemonicParsing="false" text="OK" onAction="#onCancelButtonClick">
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="OK">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>

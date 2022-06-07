@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -56,10 +57,10 @@ public class MainFrameController implements BazisXMLTags {
 
     private final ArrayList<String> absentMaterials = new ArrayList<>();
 
+    private HashMap<String, Boolean> selectionOfExportMaterials = new HashMap<>(), selectionOfExportEdges = new HashMap<>();
+
     @FXML
     private MenuItem openFileMenuItem;
-    @FXML
-    private MenuItem dataBaseMenuItem;
     @FXML
     private Label fullEdgeLengthLabel;
     @FXML
@@ -75,11 +76,15 @@ public class MainFrameController implements BazisXMLTags {
     @FXML
     private ListView<CheckBox> materialCheckList;
     @FXML
+    private ListView<Button> absentMaterialButtonList;
+    @FXML
     private TableView<TechMaterialData> techMaterialTable;
     @FXML
     private TableView<TechEdgeData> techEdgeTable;
     @FXML
     private Button unsupportedPanelsButton;
+    @FXML
+    private VBox materialListVBox;
 
     @FXML
     void onExitClick() {
@@ -90,6 +95,8 @@ public class MainFrameController implements BazisXMLTags {
     @FXML
     void onOpenFile() {
         unsupportedPanels.clear();
+        materialCheckList.getItems().clear();
+        absentMaterialButtonList.getItems().clear();
         unsupportedPanelsButton.visibleProperty().setValue(false);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(ConfigurationProperties.getConfigurationProperties().getPathToOpenXML()));
@@ -187,12 +194,42 @@ public class MainFrameController implements BazisXMLTags {
                 materialCheckList.getItems().add(chk);
             }
             materialCheckList.setItems(FXCollections.observableArrayList(mainMaterialCheckBoxes));
+
+
 //TODO продолжить работу с листами
             setDataToArrayList(panels);
             setMaterialTable(techMaterialDataArrayList);
             exportButton.setDisable(false);
             materialDBList.forEach((k, v) -> v.getFormatChoiceBox().setOnAction(actionEvent -> resetTableData(panels)));
             setEdgeTable(techEdgeDataArrayList);
+
+            if (!absentMaterials.isEmpty()) {
+                ArrayList<Button> absentMaterialButtons = new ArrayList<>();
+                for (String str : absentMaterials) {
+                    absentMaterialButtons.add(new Button(str));
+                }
+                absentMaterialButtonList.setItems(FXCollections.observableArrayList(absentMaterialButtons));
+                absentMaterialButtonList.widthProperty().addListener(observable -> {
+                    absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 20));
+                });
+                absentMaterialButtonList.getItems().forEach(button -> {
+                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 20);
+                    button.setAlignment(Pos.CENTER);
+                    button.setOnAction(event -> {
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        ButtonType okButton = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
+                        ButtonType cancelButton = new ButtonType("Игнорировать", ButtonBar.ButtonData.CANCEL_CLOSE);
+                        alert.setTitle("Отсутствующий материал");
+                        alert.setHeaderText(null);
+                        alert.getButtonTypes().setAll(okButton, cancelButton);
+                        alert.setContentText("Этот материал отсутствует в базе плитных материалов:\n" + button.getText());
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.get() == okButton) {
+                            showAddMaterialDBForm(button.getText());
+                        }
+                    });
+                });
+            }
             showUnsupportedPanels(panels);
         }
     }
@@ -495,11 +532,21 @@ public class MainFrameController implements BazisXMLTags {
         }
     }
 
-    void resetTableData(ArrayList<Panel> panels) {
+    private void resetTableData(ArrayList<Panel> panels) {
         setDataToArrayList(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes));
         setMaterialTable(techMaterialDataArrayList);
         setEdgeTable(techEdgeDataArrayList);
     }
+//TODO Selection memory of materials and edges
+
+//    private HashMap<String, Boolean> getExportPositionsSelections(TableView<?> tableView, HashMap<String, Boolean> selectionMap) {
+//        List<CheckBox> checkBoxArrayList = new ArrayList<>();
+//        tableView.getItems().forEach(techMaterialData -> {
+//
+//        });
+//
+//        return selectionMap;
+//    }
 
     //----------------------Проверка чек-боксов------------------
     public static ArrayList<Panel> panelsBySelectedMaterial(ArrayList<Panel> allPanels, ArrayList<CheckBox> checkBoxMaterialList) {
@@ -628,22 +675,6 @@ public class MainFrameController implements BazisXMLTags {
             } else {
                 absentMaterials.add(str);
             }
-
-
-                /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                ButtonType okButton = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
-                ButtonType cancelButton = new ButtonType("Игнорировать", ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.setTitle("Отсутствующий материал");
-                alert.setHeaderText(null);
-                alert.getButtonTypes().setAll(okButton, cancelButton);
-                alert.setContentText("В списке плитных материалов остутствует:\n" + str);
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == okButton) {
-                    showAddMaterialDBForm(str);
-                } else{
-                    //TODO ignored materials to list and stop asking about this shit
-                }*/
-
         }
         return materialsSquareData;
     }
