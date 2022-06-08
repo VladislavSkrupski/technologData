@@ -8,21 +8,34 @@ import java.util.HashMap;
 public class TechMaterialData {
     private final CheckBox materialNameCheckBox;
     private final ChoiceBox<String> formatChoiceBox;
+    private Boolean selected = false;
     private String name;
     private String thickness;
     private HashMap<String, Float[]> format;
     private String unit;
     private String amount;
 
-    public TechMaterialData(String name, String thickness, HashMap<String, Float[]> format, ChoiceBox<String> formatChoiceBox, String unit, String amount) {
+    public TechMaterialData(String name, String thickness, HashMap<String, Float[]> format, ChoiceBox<String> formatChoiceBox, String unit, String amount, Boolean state) {
         this.name = name;
         this.materialNameCheckBox = new CheckBox(this.name);
-        this.materialNameCheckBox.setSelected(true);
+        this.materialNameCheckBox.setOnAction(event -> {
+            this.selected = materialNameCheckBox.isSelected();
+        });
         this.thickness = thickness;
         this.format = format;
         this.formatChoiceBox = formatChoiceBox;
         this.unit = unit;
         this.amount = amount;
+        this.selected = state;
+        this.materialNameCheckBox.setSelected(this.selected);
+    }
+
+    public Boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean state) {
+        this.selected = state;
     }
 
     public CheckBox getMaterialNameCheckBox() {

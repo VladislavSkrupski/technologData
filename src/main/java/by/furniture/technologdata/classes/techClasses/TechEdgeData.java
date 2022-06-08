@@ -16,17 +16,22 @@ public class TechEdgeData {
     private Float thickness;
     private final String unit = "м";
     private String format;
+    private Boolean selected = false;
 
-    public TechEdgeData(String article, String name, String designation, Float length, Float width, Float thickness) {
+    public TechEdgeData(String article, String name, String designation, Float length, Float width, Float thickness, Boolean state) {
         this.article = article;
         this.name = name;
         this.nameCheckBox = new CheckBox(this.name);
-        this.nameCheckBox.setSelected(true);
+        this.nameCheckBox.setOnAction(event -> {
+            this.selected = nameCheckBox.isSelected();
+        });
         this.designation = designation;
         this.length = length;
         this.width = width;
         this.thickness = thickness;
         this.format = String.format(this.thickness % 1 != 0 ? "%.1f" : "%.0f", this.thickness) + "/" + String.format("%.0f", this.width);
+        this.selected = state;
+        this.nameCheckBox.setSelected(this.selected);
     }
 
     public String getArticle() {
@@ -51,6 +56,14 @@ public class TechEdgeData {
 
     public void setNameCheckBox(CheckBox nameCheckBox) {
         this.nameCheckBox = nameCheckBox;
+    }
+
+    public Boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean state) {
+        this.selected = state;
     }
 
     public String getDesignation() {

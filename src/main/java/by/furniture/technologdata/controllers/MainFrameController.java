@@ -14,7 +14,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -54,10 +53,9 @@ public class MainFrameController implements BazisXMLTags {
     private final ArrayList<TechEdgeData> techEdgeDataArrayList = new ArrayList<>();
     public static ArrayList<CheckBox> mainMaterialCheckBoxes = new ArrayList<>();
     public static Product product = new Product();
-
     private final ArrayList<String> absentMaterials = new ArrayList<>();
-
-    private HashMap<String, Boolean> selectionOfExportMaterials = new HashMap<>(), selectionOfExportEdges = new HashMap<>();
+    private final HashMap<String, Boolean> selectionOfExportMaterials = new HashMap<>();
+    private final HashMap<String, Boolean> selectionOfExportEdges = new HashMap<>();
 
     @FXML
     private MenuItem openFileMenuItem;
@@ -76,6 +74,8 @@ public class MainFrameController implements BazisXMLTags {
     @FXML
     private ListView<CheckBox> materialCheckList;
     @FXML
+    private ListView<String> uniqueFacingMaterialsList;
+    @FXML
     private ListView<Button> absentMaterialButtonList;
     @FXML
     private TableView<TechMaterialData> techMaterialTable;
@@ -83,8 +83,6 @@ public class MainFrameController implements BazisXMLTags {
     private TableView<TechEdgeData> techEdgeTable;
     @FXML
     private Button unsupportedPanelsButton;
-    @FXML
-    private VBox materialListVBox;
 
     @FXML
     void onExitClick() {
@@ -94,9 +92,12 @@ public class MainFrameController implements BazisXMLTags {
 
     @FXML
     void onOpenFile() {
+        selectionOfExportEdges.clear();
+        selectionOfExportMaterials.clear();
         unsupportedPanels.clear();
         materialCheckList.getItems().clear();
         absentMaterialButtonList.getItems().clear();
+        absentMaterials.clear();
         unsupportedPanelsButton.visibleProperty().setValue(false);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(ConfigurationProperties.getConfigurationProperties().getPathToOpenXML()));
@@ -178,25 +179,23 @@ public class MainFrameController implements BazisXMLTags {
             for (Panel panel : panels) {
                 mainMaterials.add(panel.getMainMaterial().getNomination());
             }
-            mainMaterialCheckBoxes.clear();
-            materialCheckList.getItems().clear();
             productOrderLabel.setText(product.getOrder());
             productNominationLabel.setText(product.getNomination());
             productArticleLabel.setText(product.getArticle());
             productDeveloperLabel.setText(product.getDeveloper());
+            mainMaterialCheckBoxes.clear();
+            materialCheckList.getItems().clear();
             for (String str : mainMaterials) {
                 mainMaterialCheckBoxes.add(new CheckBox(str));
             }
             for (CheckBox chk : mainMaterialCheckBoxes) {
                 chk.setSelected(true);
-                //chk.setPadding(new Insets(5, 5, 5, 5));
                 chk.setOnAction(actionEvent -> resetTableData(panels));
                 materialCheckList.getItems().add(chk);
             }
             materialCheckList.setItems(FXCollections.observableArrayList(mainMaterialCheckBoxes));
+            uniqueFacingMaterialsList.setItems(FXCollections.observableArrayList(getUniqueFacingMaterials(panels)));
 
-
-//TODO продолжить работу с листами
             setDataToArrayList(panels);
             setMaterialTable(techMaterialDataArrayList);
             exportButton.setDisable(false);
@@ -209,9 +208,8 @@ public class MainFrameController implements BazisXMLTags {
                     absentMaterialButtons.add(new Button(str));
                 }
                 absentMaterialButtonList.setItems(FXCollections.observableArrayList(absentMaterialButtons));
-                absentMaterialButtonList.widthProperty().addListener(observable -> {
-                    absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 20));
-                });
+                absentMaterialButtonList.widthProperty().addListener(observable ->
+                        absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 20)));
                 absentMaterialButtonList.getItems().forEach(button -> {
                     button.setPrefWidth(absentMaterialButtonList.getWidth() - 20);
                     button.setAlignment(Pos.CENTER);
@@ -224,7 +222,7 @@ public class MainFrameController implements BazisXMLTags {
                         alert.getButtonTypes().setAll(okButton, cancelButton);
                         alert.setContentText("Этот материал отсутствует в базе плитных материалов:\n" + button.getText());
                         Optional<ButtonType> result = alert.showAndWait();
-                        if (result.get() == okButton) {
+                        if (result.isPresent() && result.get() == okButton) {
                             showAddMaterialDBForm(button.getText());
                         }
                     });
@@ -324,63 +322,67 @@ public class MainFrameController implements BazisXMLTags {
             productArticleRow.getCell(1).setCellStyle(orderDataCellStyle);
 
             rowTempPoint++;
-            HSSFRow boardRow = hssfSheet.createRow(rowTempPoint++);
-            boardRow.createCell(0).setCellValue("Плитные материалы");
-            boardRow.getCell(0).setCellStyle(groupTitleStyle);
-            HSSFRow boardTitleRow = hssfSheet.createRow(rowTempPoint++);
-            for (int i = 0; i < techMaterialTable.getColumns().size(); i++) {
-                boardTitleRow.createCell(i).setCellValue(techMaterialTable.getColumns().get(i).getText());
-                boardTitleRow.getCell(i).setCellStyle(titleCellStyle);
-            }
-            for (int rowItem = 0; rowItem < techMaterialTable.getItems().size(); rowItem++) {
-                if (techMaterialTable.getItems().get(rowItem).getMaterialNameCheckBox().isSelected()) {
-                    HSSFRow hssfRow = hssfSheet.createRow(rowTempPoint++);
-                    for (int c = 0; c < techMaterialTable.getColumns().size(); c++) {
-                        Object cellValue = techMaterialTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
-                        if (cellValue != null) {
-                            if (cellValue.getClass() == CheckBox.class) {
-                                hssfRow.createCell(c).setCellValue(((CheckBox) cellValue).getText());
-                            } else if (cellValue.getClass() == ChoiceBox.class) {
-                                hssfRow.createCell(c).setCellValue(((ChoiceBox<?>) cellValue).getValue().toString());
-                            } else {
-                                hssfRow.createCell(c).setCellValue(cellValue.toString());
-                            }
-                            if (c == 0) {
-                                hssfRow.getCell(c).setCellStyle(firstDataCellStyle);
-                            } else {
-                                hssfRow.getCell(c).setCellStyle(dataCellStyle);
+            if (!isAllMaterialsUnselected()) {
+                HSSFRow boardRow = hssfSheet.createRow(rowTempPoint++);
+                boardRow.createCell(0).setCellValue("Плитные материалы");
+                boardRow.getCell(0).setCellStyle(groupTitleStyle);
+                HSSFRow boardTitleRow = hssfSheet.createRow(rowTempPoint++);
+                for (int i = 0; i < techMaterialTable.getColumns().size(); i++) {
+                    boardTitleRow.createCell(i).setCellValue(techMaterialTable.getColumns().get(i).getText());
+                    boardTitleRow.getCell(i).setCellStyle(titleCellStyle);
+                }
+                for (int rowItem = 0; rowItem < techMaterialTable.getItems().size(); rowItem++) {
+                    if (techMaterialTable.getItems().get(rowItem).getMaterialNameCheckBox().isSelected()) {
+                        HSSFRow hssfRow = hssfSheet.createRow(rowTempPoint++);
+                        for (int c = 0; c < techMaterialTable.getColumns().size(); c++) {
+                            Object cellValue = techMaterialTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
+                            if (cellValue != null) {
+                                if (cellValue.getClass() == CheckBox.class) {
+                                    hssfRow.createCell(c).setCellValue(((CheckBox) cellValue).getText());
+                                } else if (cellValue.getClass() == ChoiceBox.class) {
+                                    hssfRow.createCell(c).setCellValue(((ChoiceBox<?>) cellValue).getValue().toString());
+                                } else {
+                                    hssfRow.createCell(c).setCellValue(cellValue.toString());
+                                }
+                                if (c == 0) {
+                                    hssfRow.getCell(c).setCellStyle(firstDataCellStyle);
+                                } else {
+                                    hssfRow.getCell(c).setCellStyle(dataCellStyle);
+                                }
                             }
                         }
                     }
                 }
+                rowTempPoint++;
             }
-            rowTempPoint++;
-            HSSFRow edgeRow = hssfSheet.createRow(rowTempPoint++);
-            edgeRow.createCell(0).setCellValue("Кромочные материалы");
-            edgeRow.getCell(0).setCellStyle(groupTitleStyle);
-            HSSFRow edgeTitleRow = hssfSheet.createRow(rowTempPoint++);
-            for (int i = 0; i < techEdgeTable.getColumns().size(); i++) {
-                edgeTitleRow.createCell(i).setCellValue(techEdgeTable.getColumns().get(i).getText());
-                edgeTitleRow.getCell(i).setCellStyle(titleCellStyle);
-            }
-            for (int rowItem = 0; rowItem < techEdgeTable.getItems().size(); rowItem++) {
-                if (techEdgeTable.getItems().get(rowItem).getNameCheckBox().isSelected()) {
-                    HSSFRow hssfRow = hssfSheet.createRow(rowTempPoint++);
-                    for (int c = 0; c < techEdgeTable.getColumns().size(); c++) {
-                        Object cellValue = techEdgeTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
-                        if (cellValue != null) {
-                            if (cellValue.getClass() == CheckBox.class) {
-                                hssfRow.createCell(c).setCellValue(((CheckBox) cellValue).getText());
-                                hssfRow.getCell(c).getCellStyle().setAlignment(HorizontalAlignment.LEFT);
-                            } else {
-                                hssfRow.createCell(c).setCellValue(cellValue.toString());
-                            }
-                            if (c == 0) {
-                                hssfRow.getCell(c).setCellStyle(firstDataCellStyle);
-                            } else {
-                                hssfRow.getCell(c).setCellStyle(dataCellStyle);
-                            }
+            if (!isAllEdgesUnselected()) {
+                HSSFRow edgeRow = hssfSheet.createRow(rowTempPoint++);
+                edgeRow.createCell(0).setCellValue("Кромочные материалы");
+                edgeRow.getCell(0).setCellStyle(groupTitleStyle);
+                HSSFRow edgeTitleRow = hssfSheet.createRow(rowTempPoint++);
+                for (int i = 0; i < techEdgeTable.getColumns().size(); i++) {
+                    edgeTitleRow.createCell(i).setCellValue(techEdgeTable.getColumns().get(i).getText());
+                    edgeTitleRow.getCell(i).setCellStyle(titleCellStyle);
+                }
+                for (int rowItem = 0; rowItem < techEdgeTable.getItems().size(); rowItem++) {
+                    if (techEdgeTable.getItems().get(rowItem).getNameCheckBox().isSelected()) {
+                        HSSFRow hssfRow = hssfSheet.createRow(rowTempPoint++);
+                        for (int c = 0; c < techEdgeTable.getColumns().size(); c++) {
+                            Object cellValue = techEdgeTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
+                            if (cellValue != null) {
+                                if (cellValue.getClass() == CheckBox.class) {
+                                    hssfRow.createCell(c).setCellValue(((CheckBox) cellValue).getText());
+                                    hssfRow.getCell(c).getCellStyle().setAlignment(HorizontalAlignment.LEFT);
+                                } else {
+                                    hssfRow.createCell(c).setCellValue(cellValue.toString());
+                                }
+                                if (c == 0) {
+                                    hssfRow.getCell(c).setCellStyle(firstDataCellStyle);
+                                } else {
+                                    hssfRow.getCell(c).setCellStyle(dataCellStyle);
+                                }
 
+                            }
                         }
                     }
                 }
@@ -408,6 +410,24 @@ public class MainFrameController implements BazisXMLTags {
                 errorAlert.showAndWait();
             }
         }
+    }
+
+    private Boolean isAllEdgesUnselected() {
+        List<TechEdgeData> techEdgeData = techEdgeTable.getItems();
+        int i = 0;
+        for (TechEdgeData edgeData : techEdgeData) {
+            if (!edgeData.getNameCheckBox().isSelected()) i++;
+        }
+        return i == techEdgeData.size();
+    }
+
+    private Boolean isAllMaterialsUnselected() {
+        List<TechMaterialData> techMaterialData = techMaterialTable.getItems();
+        int i = 0;
+        for (TechMaterialData materialData : techMaterialData) {
+            if (!materialData.getMaterialNameCheckBox().isSelected()) i++;
+        }
+        return i == techMaterialData.size();
     }
 
     @FXML
@@ -495,8 +515,14 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
+        techMaterialDataArrayList.forEach(techMaterialData -> {
+            selectionOfExportMaterials.put(techMaterialData.getName(), techMaterialData.isSelected());
+        });
         techMaterialDataArrayList.clear();
         techMaterialDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
+        techEdgeDataArrayList.forEach(techEdgeData -> {
+            selectionOfExportEdges.put(techEdgeData.getName(), techEdgeData.isSelected());
+        });
         techEdgeDataArrayList.clear();
         techEdgeDataArrayList.addAll(overallEdgeLength(panelArrayList));
     }
@@ -534,19 +560,32 @@ public class MainFrameController implements BazisXMLTags {
 
     private void resetTableData(ArrayList<Panel> panels) {
         setDataToArrayList(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes));
+        uniqueFacingMaterialsList.getItems().clear();
+        uniqueFacingMaterialsList.setItems(FXCollections.observableArrayList(getUniqueFacingMaterials(panels)));
         setMaterialTable(techMaterialDataArrayList);
         setEdgeTable(techEdgeDataArrayList);
     }
-//TODO Selection memory of materials and edges
 
-//    private HashMap<String, Boolean> getExportPositionsSelections(TableView<?> tableView, HashMap<String, Boolean> selectionMap) {
-//        List<CheckBox> checkBoxArrayList = new ArrayList<>();
-//        tableView.getItems().forEach(techMaterialData -> {
-//
-//        });
-//
-//        return selectionMap;
-//    }
+    /**
+     * Возвращает список уникальных наименований материалов, которые нанесены в виде облицовки пласти и не встречаются среди основных материалов
+     *
+     * @param panels - список всех панелей
+     * @return лист наименований материалов, облицовывающих панели
+     */
+    private List<String> getUniqueFacingMaterials(ArrayList<Panel> panels) {
+        HashSet<String> facingSurfacesNames = new HashSet<>();
+        ArrayList<Panel> selectedPanels = new ArrayList<>(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes));
+        for (Panel panel : selectedPanels) {
+            for (ArrayList<FacingSurface> facingSurfaces : panel.getFacingSurfaces()) {
+                for (FacingSurface facingSurface : facingSurfaces) {
+                    if (!mainMaterials.contains(facingSurface.getNomination())) {
+                        facingSurfacesNames.add(facingSurface.getNomination());
+                    }
+                }
+            }
+        }
+        return facingSurfacesNames.stream().toList();
+    }
 
     //----------------------Проверка чек-боксов------------------
     public static ArrayList<Panel> panelsBySelectedMaterial(ArrayList<Panel> allPanels, ArrayList<CheckBox> checkBoxMaterialList) {
@@ -572,6 +611,7 @@ public class MainFrameController implements BazisXMLTags {
             for (int a = 0; a < panel.getEdgeLists().size(); a++) {
                 if (panel.getEdgeLists().get(a).size() > 0) {
                     panel.getEdgeLists().get(a).forEach(edge -> {
+                        Boolean state = selectionOfExportEdges.getOrDefault(edge.getNomination(), true);
                         if (edgesMap.containsKey(edge.getNomination())) {
                             float tempLength = edgesMap.get(edge.getNomination()).getLength() + edge.getLength() * panel.getAmount();
                             edgesMap.get(edge.getNomination()).setLength(tempLength);
@@ -582,8 +622,8 @@ public class MainFrameController implements BazisXMLTags {
                                     edge.getDesignation(),
                                     edge.getLength() * panel.getAmount(),
                                     edge.getWidth(),
-                                    edge.getThickness())
-                            );
+                                    edge.getThickness(),
+                                    state));
                         }
                     });
                 }
@@ -599,7 +639,7 @@ public class MainFrameController implements BazisXMLTags {
             v.setOrderWholeLength();
             edgeData.add(v);
         });
-        fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", fullLength / 1000) + " м");
+        fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", fullLength / 1000) + " м"); //TODO проверить правильность вывода метража
         fullEdgeLengthLabel.setStyle("-fx-font-size: 12px; -fx-border-color: black");
         return edgeData;
     }
@@ -650,6 +690,7 @@ public class MainFrameController implements BazisXMLTags {
         for (String str : mainMaterialNames) {
             if (materialDBList.containsKey(str)) {
                 String format = materialDBList.get(str).getFormatChoiceBox().getValue();
+                Boolean state = selectionOfExportMaterials.getOrDefault(str, true);
                 if (facingSurfaceSquareMap.get(str) != null) {
                     float squareInList = (mainMaterialSquareMap.get(str) == null ? 0 : mainMaterialSquareMap.get(str)) + facingSurfaceSquareMap.get(str);
                     squareInList = (squareInList * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
@@ -660,7 +701,8 @@ public class MainFrameController implements BazisXMLTags {
                             materialDBList.get(str).getBoardFormatsMap(),
                             materialDBList.get(str).getFormatChoiceBox(),
                             "лист",
-                            square.setScale(0, RoundingMode.CEILING).toString()));
+                            square.setScale(0, RoundingMode.CEILING).toString(),
+                            state));
                 } else {
                     float squareInList = (mainMaterialSquareMap.get(str) * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
                     BigDecimal square = new BigDecimal(squareInList);
@@ -670,7 +712,8 @@ public class MainFrameController implements BazisXMLTags {
                             materialDBList.get(str).getBoardFormatsMap(),
                             materialDBList.get(str).getFormatChoiceBox(),
                             "лист",
-                            square.setScale(0, RoundingMode.CEILING).toString()));
+                            square.setScale(0, RoundingMode.CEILING).toString(),
+                            state));
                 }
             } else {
                 absentMaterials.add(str);
