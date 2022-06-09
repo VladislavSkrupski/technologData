@@ -841,8 +841,6 @@ public class StartPointLauncher extends Application implements BazisXMLTags {
                         materialDBS.put(materialDB.getName(), materialDB);
                     }
                     materialDBS.get(materialDB.getName()).setFormatChoiceBox();
-                    materialDBS.get(materialDB.getName()).getFormatChoiceBox().setOnAction(actionEvent -> {
-                    });
                 }
             }
         } catch (IOException e) {

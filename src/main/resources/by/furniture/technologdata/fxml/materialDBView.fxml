@@ -4,50 +4,51 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.MaterialDBViewController">
-   <children>
-      <HBox alignment="CENTER">
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <Button fx:id="editInExcelButton" mnemonicParsing="false" onAction="#onEditInExcelButtonClick" text="Редактировать в EXCEL">
+<VBox prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.14-internal"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="by.furniture.technologdata.controllers.MaterialDBViewController">
+    <HBox alignment="CENTER">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <Button mnemonicParsing="false" onAction="#onEditInExcelButtonClick" text="Редактировать в EXCEL">
             <HBox.margin>
-               <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
+                <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
             </HBox.margin>
-         </Button>
-         <Button fx:id="addButton" mnemonicParsing="false" onAction="#onShowAddForm" text="Добавить">
+        </Button>
+        <Button mnemonicParsing="false" onAction="#onShowAddForm" text="Добавить">
             <HBox.margin>
-               <Insets bottom="5.0" right="10.0" top="10.0" />
+                <Insets bottom="5.0" right="10.0" top="10.0"/>
             </HBox.margin>
-         </Button>
-         <Button onAction="#refreshMaterialDB" mnemonicParsing="false" text="Перечитать базу материалов">
+        </Button>
+        <Button onAction="#refreshMaterialDB" mnemonicParsing="false" text="Перечитать базу материалов">
             <HBox.margin>
-               <Insets bottom="5.0" right="10.0" top="10.0" />
+                <Insets bottom="5.0" right="10.0" top="10.0"/>
             </HBox.margin>
-         </Button>
-      </HBox>
-      <TextField promptText="Фильтр по наименованию" visible="false">
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
-         </VBox.margin>
-      </TextField>
-      <TableView fx:id="materialDBTableView" editable="true" prefHeight="200.0" prefWidth="200.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-         <VBox.margin>
-            <Insets left="10.0" right="10.0" />
-         </VBox.margin></TableView>
-      <HBox alignment="CENTER_RIGHT" maxHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <children>
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="OK">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </Button>
-            <Button fx:id="cancelButton" minWidth="75.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="Отмена">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
-   </children>
+        </Button>
+    </HBox>
+    <TextField promptText="Фильтр по наименованию" visible="false">
+        <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="5.0"/>
+        </VBox.margin>
+    </TextField>
+    <TableView fx:id="materialDBTableView" editable="true" prefHeight="200.0" prefWidth="200.0"
+               tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets left="10.0" right="10.0"/>
+        </VBox.margin>
+    </TableView>
+    <HBox alignment="CENTER_RIGHT" maxHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="200.0"
+          VBox.vgrow="ALWAYS">
+        <Button minWidth="75.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="OK">
+            <HBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </HBox.margin>
+        </Button>
+        <Button minWidth="75.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="Отмена">
+            <HBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </HBox.margin>
+        </Button>
+    </HBox>
 </VBox>

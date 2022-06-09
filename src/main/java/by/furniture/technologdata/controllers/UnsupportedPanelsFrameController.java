@@ -171,16 +171,8 @@ public class UnsupportedPanelsFrameController {
         unsupportedPanelsFrameStage.close();
     }
 
-    public Stage getUnsupportedPanelsFrameStage() {
-        return unsupportedPanelsFrameStage;
-    }
-
     public void setUnsupportedPanelsFrameStage(Stage unsupportedPanelsFrameStage) {
         this.unsupportedPanelsFrameStage = unsupportedPanelsFrameStage;
-    }
-
-    public List<UnsupportedPanel> getUnsupportedPanels() {
-        return unsupportedPanels;
     }
 
     public void setUnsupportedPanels(List<UnsupportedPanel> unsupportedPanels) {

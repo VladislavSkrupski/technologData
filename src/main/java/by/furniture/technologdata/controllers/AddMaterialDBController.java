@@ -4,9 +4,7 @@ import by.furniture.technologdata.StartPointLauncher;
 import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -32,23 +30,10 @@ public class AddMaterialDBController {
     private TextField thicknessField;
 
     @FXML
-    private Button okButton;
-    @FXML
-    private Button cancelButton;
-
-    @FXML
     void initialize() {
     }
 
     public AddMaterialDBController() {
-    }
-
-    public Stage getAddMaterialDBStage() {
-        return addMaterialDBStage;
-    }
-
-    public TextField getArticleTextField() {
-        return articleTextField;
     }
 
     public TextField getNameTextField() {

@@ -22,9 +22,7 @@ public class TechEdgeData {
         this.article = article;
         this.name = name;
         this.nameCheckBox = new CheckBox(this.name);
-        this.nameCheckBox.setOnAction(event -> {
-            this.selected = nameCheckBox.isSelected();
-        });
+        this.nameCheckBox.setOnAction(event -> this.selected = nameCheckBox.isSelected());
         this.designation = designation;
         this.length = length;
         this.width = width;

@@ -209,10 +209,11 @@ public class MainFrameController implements BazisXMLTags {
                 }
                 absentMaterialButtonList.setItems(FXCollections.observableArrayList(absentMaterialButtons));
                 absentMaterialButtonList.widthProperty().addListener(observable ->
-                        absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 20)));
+                        absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 40)));
                 absentMaterialButtonList.getItems().forEach(button -> {
-                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 20);
-                    button.setAlignment(Pos.CENTER);
+                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 40);
+                    button.setAlignment(Pos.BASELINE_CENTER);
+                    button.setStyle("-fx-background-color: rgba(255,42,42,0.6); -fx-font-weight: bold;");
                     button.setOnAction(event -> {
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         ButtonType okButton = new ButtonType("Добавить", ButtonBar.ButtonData.OK_DONE);
@@ -224,6 +225,11 @@ public class MainFrameController implements BazisXMLTags {
                         Optional<ButtonType> result = alert.showAndWait();
                         if (result.isPresent() && result.get() == okButton) {
                             showAddMaterialDBForm(button.getText());
+                            if (materialDBList.containsKey(button.getText())) {
+                                button.setDisable(true);
+                                button.setStyle("-fx-background-color: rgba(0,236,0,0.6)");
+                                resetTableData(panels);
+                            }
                         }
                     });
                 });
@@ -301,7 +307,6 @@ public class MainFrameController implements BazisXMLTags {
             groupTitleStyle.setFont(groupTitleFont);
 
             HSSFSheet hssfSheet = hssfWorkbook.createSheet(product.getOrder().equals("") ? "лист 1" : product.getOrder());
-
 
             HSSFRow productOrderRow = hssfSheet.createRow(rowTempPoint++);
             productOrderRow.createCell(0).setCellValue("Заказ:");
@@ -445,6 +450,7 @@ public class MainFrameController implements BazisXMLTags {
             ConfigurationFrameController controller = configurationFrameLoader.getController();
             controller.setConfigurationFrameStage(configurationFrameStage);
             configurationFrameStage.showAndWait();
+            resetTableData(panels);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -515,14 +521,10 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     void setDataToArrayList(ArrayList<Panel> panelArrayList) {
-        techMaterialDataArrayList.forEach(techMaterialData -> {
-            selectionOfExportMaterials.put(techMaterialData.getName(), techMaterialData.isSelected());
-        });
+        techMaterialDataArrayList.forEach(techMaterialData -> selectionOfExportMaterials.put(techMaterialData.getName(), techMaterialData.isSelected()));
         techMaterialDataArrayList.clear();
         techMaterialDataArrayList.addAll(overallSquareOfMaterials(panelArrayList));
-        techEdgeDataArrayList.forEach(techEdgeData -> {
-            selectionOfExportEdges.put(techEdgeData.getName(), techEdgeData.isSelected());
-        });
+        techEdgeDataArrayList.forEach(techEdgeData -> selectionOfExportEdges.put(techEdgeData.getName(), techEdgeData.isSelected()));
         techEdgeDataArrayList.clear();
         techEdgeDataArrayList.addAll(overallEdgeLength(panelArrayList));
     }
@@ -606,7 +608,6 @@ public class MainFrameController implements BazisXMLTags {
     public ArrayList<TechEdgeData> overallEdgeLength(ArrayList<Panel> panelArrayList) {
         ArrayList<TechEdgeData> edgeData = new ArrayList<>();
         HashMap<String, TechEdgeData> edgesMap = new HashMap<>();
-        float fullLength = 0.0f;
         for (Panel panel : panelArrayList) {
             for (int a = 0; a < panel.getEdgeLists().size(); a++) {
                 if (panel.getEdgeLists().get(a).size() > 0) {
@@ -624,14 +625,11 @@ public class MainFrameController implements BazisXMLTags {
                                     edge.getWidth(),
                                     edge.getThickness(),
                                     state));
+                            edgesMap.get(edge.getNomination()).getNameCheckBox().setOnMouseClicked(event -> fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(techEdgeDataArrayList)) + " м"));
                         }
                     });
                 }
             }
-        }
-        // Сумма чистой кромки
-        for (TechEdgeData techEdgeData : edgesMap.values()) {
-            fullLength += techEdgeData.getLength();
         }
         // Увеличение длины кромки на коэффициент
         edgesMap.forEach((k, v) -> {
@@ -639,9 +637,28 @@ public class MainFrameController implements BazisXMLTags {
             v.setOrderWholeLength();
             edgeData.add(v);
         });
-        fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", fullLength / 1000) + " м"); //TODO проверить правильность вывода метража
-        fullEdgeLengthLabel.setStyle("-fx-font-size: 12px; -fx-border-color: black");
+        fullEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth());
+        fullEdgeLengthLabel.widthProperty().addListener(observable -> fullEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth()));
+        fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(edgeData)) + " м");
+        fullEdgeLengthLabel.setStyle("-fx-font-size: 12px; -fx-border-color: black; -fx-end-margin: 5px; -fx-start-margin: 5px");
         return edgeData;
+    }
+
+    /**
+     * Возвращает чистую (без коэффициента) общую длину всей выбранной в заказе кромки
+     *
+     * @return длина всей выбранной кромки
+     */
+    public Float getProductionEdgeLength(ArrayList<TechEdgeData> edgeData) {
+        Float expectedProductLength = 0.0f;
+        if (!edgeData.isEmpty()) {
+            for (TechEdgeData techEdgeData : edgeData) {
+                if (techEdgeData.isSelected()) {
+                    expectedProductLength += techEdgeData.getLength();
+                }
+            }
+        }
+        return expectedProductLength;
     }
 
     public ArrayList<TechMaterialData> overallSquareOfMaterials(ArrayList<Panel> panelArrayList) {

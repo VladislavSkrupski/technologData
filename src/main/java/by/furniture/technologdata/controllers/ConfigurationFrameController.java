@@ -30,8 +30,6 @@ public class ConfigurationFrameController {
     @FXML
     private Button pathToMaterialDBButton;
     @FXML
-    private Button OKButton;
-    @FXML
     private Button cancelButton;
 
     public ConfigurationFrameController() {
@@ -73,10 +71,6 @@ public class ConfigurationFrameController {
         }
         ConfigurationProperties.savePropertiesToFile();
         configurationFrameStage.close();
-    }
-
-    public Stage getConfigurationFrameStage() {
-        return configurationFrameStage;
     }
 
     public void setConfigurationFrameStage(Stage configurationFrameStage) {

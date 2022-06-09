@@ -6,38 +6,21 @@ import by.furniture.technologdata.classes.configuration.ConfigurationProperties;
 import by.furniture.technologdata.classes.techClasses.MaterialDB;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.HashMap;
 
 import static by.furniture.technologdata.controllers.MainFrameController.showAddMaterialDBForm;
 
 public class MaterialDBViewController {
     private Stage materialDBViewStage;
-
-    private final HashMap<String, MaterialDB> materialDBS = new HashMap<>();
-
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private Button addButton;
-    @FXML
-    private Button editInExcelButton;
     @FXML
     private TableView<MaterialDB> materialDBTableView;
 
     public MaterialDBViewController() {
-        this.materialDBS.putAll(StartPointLauncher.materialDBList);
-    }
-
-    public Stage getMaterialDBViewStage() {
-        return materialDBViewStage;
     }
 
     public void setMaterialDBViewStage(Stage materialDBViewStage) {
@@ -75,7 +58,7 @@ public class MaterialDBViewController {
 
     private void setMaterialDBTable() {
         materialDBTableView.getColumns().clear();
-        materialDBTableView.setItems(FXCollections.observableArrayList(materialDBS.values()));
+        materialDBTableView.setItems(FXCollections.observableArrayList(StartPointLauncher.materialDBList.values()));
         TableColumn<MaterialDB, String> articleColumn = new TableColumn<>("Артикул");
         articleColumn.setCellValueFactory(new PropertyValueFactory<>("article"));
         materialDBTableView.getColumns().add(articleColumn);
