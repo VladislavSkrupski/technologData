@@ -1,2 +1,4 @@
-# technologData
-Desktop program for technologist
+<h1 style="text-align: center">Technolog Data (BlackcutFromXML)</h1>
+<div style="text-align: center; font-weight: bold; font-size: smaller; color: #72c42a">Программа разрабатывается и модифицируется под нужды компании, в которой я на данный момент работаю</div>
+<p style="text-indent: 30px; text-align: justify">Программа для черновой оценки заказа. Позволяет на базе сгенерированной спецификации XML из программы Базис-Мебельщик получить количество листов материалов и метраж кромки для бронирования. Также генерируется важный для производственного цеха показатель "общий метраж кромки в заказе" и по приходящим запросам планируется добавить большой перечень выводимых данных</p>
+<img width="999" src=".\readmeSRC\main-view.jpg" alt="main view"/>

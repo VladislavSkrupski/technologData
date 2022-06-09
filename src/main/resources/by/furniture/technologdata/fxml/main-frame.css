@@ -7,3 +7,6 @@
     -fx-pref-width: 190px;
     -fx-font-size: 14px;
 }
+#absentMaterialButtonList .list-cell {
+    -fx-alignment: center;
+}

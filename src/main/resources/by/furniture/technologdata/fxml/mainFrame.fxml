@@ -122,16 +122,16 @@
                         <Insets left="5.0" />
                     </VBox.margin>
                 </Label>
-                <ListView fx:id="absentMaterialButtonList" prefHeight="200.0" VBox.vgrow="ALWAYS">
+                <ListView id="#ab" fx:id="absentMaterialButtonList" prefHeight="200.0" styleClass="list-cell" stylesheets="@main-frame.css" VBox.vgrow="ALWAYS">
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
                 </ListView>
-               <Label fx:id="fullEdgeLengthLabel" alignment="CENTER" prefHeight="100.0" VBox.vgrow="ALWAYS">
-                   <VBox.margin>
-                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                   </VBox.margin>
-               </Label>
+                <Label fx:id="fullEdgeLengthLabel" alignment="CENTER" prefHeight="100.0" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </VBox.margin>
+                </Label>
             </VBox>
         </VBox>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">

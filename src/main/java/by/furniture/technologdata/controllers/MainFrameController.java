@@ -209,10 +209,13 @@ public class MainFrameController implements BazisXMLTags {
                 }
                 absentMaterialButtonList.setItems(FXCollections.observableArrayList(absentMaterialButtons));
                 absentMaterialButtonList.widthProperty().addListener(observable ->
-                        absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 40)));
+                        absentMaterialButtons.forEach(button -> {
+                                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 50);
+                                }
+                        )
+                );
                 absentMaterialButtonList.getItems().forEach(button -> {
-                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 40);
-                    button.setAlignment(Pos.BASELINE_CENTER);
+                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 50);
                     button.setStyle("-fx-background-color: rgba(255,42,42,0.6); -fx-font-weight: bold;");
                     button.setOnAction(event -> {
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
