@@ -1,6 +1,7 @@
 package by.furniture.technologdata.controllers;
 
 import by.furniture.technologdata.StartPointLauncher;
+import by.furniture.technologdata.classes.bazisXMLClasses.Edge;
 import by.furniture.technologdata.classes.bazisXMLClasses.FacingSurface;
 import by.furniture.technologdata.classes.bazisXMLClasses.Panel;
 import by.furniture.technologdata.classes.bazisXMLClasses.Product;
@@ -61,6 +62,8 @@ public class MainFrameController implements BazisXMLTags {
     private MenuItem openFileMenuItem;
     @FXML
     private Label fullEdgeLengthLabel;
+    @FXML
+    private Label curvedEdgeLengthLabel;
     @FXML
     private Button exportButton;
     @FXML
@@ -396,9 +399,14 @@ public class MainFrameController implements BazisXMLTags {
                 }
             }
             rowTempPoint++;
+            HSSFRow curvedEdgeLengthRow = hssfSheet.createRow(rowTempPoint);
+            curvedEdgeLengthRow.createCell(0).setCellValue(curvedEdgeLengthLabel.getText());
+            curvedEdgeLengthRow.getCell(0).setCellStyle(dataCellStyle);
+            rowTempPoint++;
             HSSFRow totalProductionEdgeLengthRow = hssfSheet.createRow(rowTempPoint);
             totalProductionEdgeLengthRow.createCell(0).setCellValue(fullEdgeLengthLabel.getText());
             totalProductionEdgeLengthRow.getCell(0).setCellStyle(dataCellStyle);
+
             for (short i = 0; i < 5; i++) {
                 hssfSheet.autoSizeColumn(i);
             }
@@ -608,6 +616,13 @@ public class MainFrameController implements BazisXMLTags {
     }
 
     //----------------------Конечные данные---------------------
+
+    /**
+     * Возвращает список объектов TechEdgeData с информацией о кромке, необходимой для заказа
+     *
+     * @param panelArrayList список панелей
+     * @return список информации о кромке в заказе
+     */
     public ArrayList<TechEdgeData> overallEdgeLength(ArrayList<Panel> panelArrayList) {
         ArrayList<TechEdgeData> edgeData = new ArrayList<>();
         HashMap<String, TechEdgeData> edgesMap = new HashMap<>();
@@ -628,7 +643,9 @@ public class MainFrameController implements BazisXMLTags {
                                     edge.getWidth(),
                                     edge.getThickness(),
                                     state));
-                            edgesMap.get(edge.getNomination()).getNameCheckBox().setOnMouseClicked(event -> fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(techEdgeDataArrayList)) + " м"));
+                            edgesMap.get(edge.getNomination()).getNameCheckBox().setOnMouseClicked(event -> {
+                                fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(techEdgeDataArrayList)) + " м");
+                            });
                         }
                     });
                 }
@@ -640,6 +657,10 @@ public class MainFrameController implements BazisXMLTags {
             v.setOrderWholeLength();
             edgeData.add(v);
         });
+        curvedEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth());
+        curvedEdgeLengthLabel.widthProperty().addListener(observable -> curvedEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth()));
+        curvedEdgeLengthLabel.setText("Криволинейный метраж кромки - " + String.format("%.0f", getCurvedEdgeLength(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes)) / 1000) + " м");
+        curvedEdgeLengthLabel.setStyle("-fx-font-size: 12px; -fx-border-color: black; -fx-end-margin: 5px; -fx-start-margin: 5px");
         fullEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth());
         fullEdgeLengthLabel.widthProperty().addListener(observable -> fullEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth()));
         fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(edgeData)) + " м");
@@ -664,6 +685,30 @@ public class MainFrameController implements BazisXMLTags {
         return expectedProductLength;
     }
 
+    /**
+     * Метод для учёта криволинейной оклейки в заказе
+     *
+     * @param panelArrayList список панелей
+     * @return возвращает метраж криволинейной оклейки
+     */
+    public Float getCurvedEdgeLength(ArrayList<Panel> panelArrayList) {
+        Float curvedLength = 0.0f;
+        for (Panel panel : panelArrayList) {
+            if (panel.getEdgeLists().get(4).size() > 0) {
+                for (Edge edge : panel.getEdgeLists().get(4)) {
+                    curvedLength += edge.getLength() * panel.getAmount();
+                }
+            }
+        }
+        return curvedLength;
+    }
+
+    /**
+     * Возвращает список объектов TechMaterialData с информацией о плитных материалах, необходимой для заказа
+     *
+     * @param panelArrayList список панелей
+     * @return список информации о плитных материалах в заказе
+     */
     public ArrayList<TechMaterialData> overallSquareOfMaterials(ArrayList<Panel> panelArrayList) {
         ArrayList<TechMaterialData> materialsSquareData = new ArrayList<>();
         ArrayList<FacingSurface> facingSurfacesList = new ArrayList<>();
