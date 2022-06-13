@@ -15,6 +15,10 @@ public class TechMaterialData {
     private String unit;
     private String amount;
 
+    private String curvedEdge;
+
+
+
     public TechMaterialData(String name, String thickness, HashMap<String, Float[]> format, ChoiceBox<String> formatChoiceBox, String unit, String amount, Boolean state) {
         this.name = name;
         this.materialNameCheckBox = new CheckBox(this.name);
