@@ -18,18 +18,16 @@ public class TechMaterialData {
     private String curvedEdge;
 
 
-
-    public TechMaterialData(String name, String thickness, HashMap<String, Float[]> format, ChoiceBox<String> formatChoiceBox, String unit, String amount, Boolean state) {
+    public TechMaterialData(String name, String thickness, HashMap<String, Float[]> format, ChoiceBox<String> formatChoiceBox, String unit, String amount, String curvedEdge, Boolean state) {
         this.name = name;
         this.materialNameCheckBox = new CheckBox(this.name);
-        this.materialNameCheckBox.setOnAction(event -> {
-            this.selected = materialNameCheckBox.isSelected();
-        });
+        this.materialNameCheckBox.setOnAction(event -> this.selected = materialNameCheckBox.isSelected());
         this.thickness = thickness;
         this.format = format;
         this.formatChoiceBox = formatChoiceBox;
         this.unit = unit;
         this.amount = amount;
+        this.curvedEdge = curvedEdge;
         this.selected = state;
         this.materialNameCheckBox.setSelected(this.selected);
     }
@@ -88,6 +86,14 @@ public class TechMaterialData {
 
     public void setAmount(String amount) {
         this.amount = amount;
+    }
+
+    public String getCurvedEdge() {
+        return curvedEdge;
+    }
+
+    public void setCurvedEdge(String curvedEdge) {
+        this.curvedEdge = curvedEdge;
     }
 
     @Override

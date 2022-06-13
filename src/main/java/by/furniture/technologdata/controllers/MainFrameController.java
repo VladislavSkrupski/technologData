@@ -15,7 +15,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -212,9 +211,7 @@ public class MainFrameController implements BazisXMLTags {
                 }
                 absentMaterialButtonList.setItems(FXCollections.observableArrayList(absentMaterialButtons));
                 absentMaterialButtonList.widthProperty().addListener(observable ->
-                        absentMaterialButtons.forEach(button -> {
-                                    button.setPrefWidth(absentMaterialButtonList.getWidth() - 50);
-                                }
+                        absentMaterialButtons.forEach(button -> button.setPrefWidth(absentMaterialButtonList.getWidth() - 50)
                         )
                 );
                 absentMaterialButtonList.getItems().forEach(button -> {
@@ -246,7 +243,6 @@ public class MainFrameController implements BazisXMLTags {
 
     @FXML
     void onExportToXLS() {
-        int rowTempPoint = 0;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(ConfigurationProperties.getConfigurationProperties().getPathToSaveXLS()));
         fileChooser.setInitialFileName(product.getNomination() + "-черновой");
@@ -312,40 +308,26 @@ public class MainFrameController implements BazisXMLTags {
             HSSFCellStyle groupTitleStyle = hssfWorkbook.createCellStyle();
             groupTitleStyle.setFont(groupTitleFont);
 
-            HSSFSheet hssfSheet = hssfWorkbook.createSheet(product.getOrder().equals("") ? "лист 1" : product.getOrder());
+            HSSFSheet hssfSheet1 = hssfWorkbook.createSheet(product.getOrder().equals("") ? "лист 1" : product.getOrder());
+            HSSFSheet hssfSheet2 = hssfWorkbook.createSheet("Производственная информация");
 
-            HSSFRow productOrderRow = hssfSheet.createRow(rowTempPoint++);
-            productOrderRow.createCell(0).setCellValue("Заказ:");
-            productOrderRow.getCell(0).setCellStyle(orderCellStyle);
-            productOrderRow.createCell(1).setCellValue(product.getOrder());
-            productOrderRow.getCell(1).setCellStyle(orderDataCellStyle);
-
-            HSSFRow productNominationRow = hssfSheet.createRow(rowTempPoint++);
-            productNominationRow.createCell(0).setCellValue("Наименование:");
-            productNominationRow.getCell(0).setCellStyle(orderCellStyle);
-            productNominationRow.createCell(1).setCellValue(product.getNomination());
-            productNominationRow.getCell(1).setCellStyle(orderDataCellStyle);
-
-            HSSFRow productArticleRow = hssfSheet.createRow(rowTempPoint++);
-            productArticleRow.createCell(0).setCellValue("Артикул:");
-            productArticleRow.getCell(0).setCellStyle(orderCellStyle);
-            productArticleRow.createCell(1).setCellValue(product.getArticle());
-            productArticleRow.getCell(1).setCellStyle(orderDataCellStyle);
-
-            rowTempPoint++;
+            int rowTempPoint1 = getXLSSheetHeader(0, orderCellStyle, orderDataCellStyle, hssfSheet1);
+            int rowTempPoint2 = getXLSSheetHeader(0, orderCellStyle, orderDataCellStyle, hssfSheet2);
+            rowTempPoint1++;
+            rowTempPoint2++;
             if (!isAllMaterialsUnselected()) {
-                HSSFRow boardRow = hssfSheet.createRow(rowTempPoint++);
+                HSSFRow boardRow = hssfSheet1.createRow(rowTempPoint1++);
                 boardRow.createCell(0).setCellValue("Плитные материалы");
                 boardRow.getCell(0).setCellStyle(groupTitleStyle);
-                HSSFRow boardTitleRow = hssfSheet.createRow(rowTempPoint++);
-                for (int i = 0; i < techMaterialTable.getColumns().size(); i++) {
+                HSSFRow boardTitleRow = hssfSheet1.createRow(rowTempPoint1++);
+                for (int i = 0; i < techMaterialTable.getColumns().size() - 1; i++) {
                     boardTitleRow.createCell(i).setCellValue(techMaterialTable.getColumns().get(i).getText());
                     boardTitleRow.getCell(i).setCellStyle(titleCellStyle);
                 }
                 for (int rowItem = 0; rowItem < techMaterialTable.getItems().size(); rowItem++) {
                     if (techMaterialTable.getItems().get(rowItem).getMaterialNameCheckBox().isSelected()) {
-                        HSSFRow hssfRow = hssfSheet.createRow(rowTempPoint++);
-                        for (int c = 0; c < techMaterialTable.getColumns().size(); c++) {
+                        HSSFRow hssfRow = hssfSheet1.createRow(rowTempPoint1++);
+                        for (int c = 0; c < techMaterialTable.getColumns().size() - 1; c++) {
                             Object cellValue = techMaterialTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
                             if (cellValue != null) {
                                 if (cellValue.getClass() == CheckBox.class) {
@@ -364,20 +346,61 @@ public class MainFrameController implements BazisXMLTags {
                         }
                     }
                 }
-                rowTempPoint++;
+                rowTempPoint1++;
+                HSSFRow curvedEdgeTableTitleRow = hssfSheet2.createRow(rowTempPoint2++);
+                curvedEdgeTableTitleRow.createCell(0).setCellValue(techMaterialTable.getColumns().get(0).getText());
+                curvedEdgeTableTitleRow.getCell(0).setCellStyle(titleCellStyle);
+                curvedEdgeTableTitleRow.createCell(1).setCellValue(techMaterialTable.getColumns().get(1).getText());
+                curvedEdgeTableTitleRow.getCell(1).setCellStyle(titleCellStyle);
+                curvedEdgeTableTitleRow.createCell(2).setCellValue(techMaterialTable.getColumns().get(5).getText());
+                curvedEdgeTableTitleRow.getCell(2).setCellStyle(titleCellStyle);
+                for (int rowItem = 0; rowItem < techMaterialTable.getItems().size(); rowItem++) {
+                    if (techMaterialTable.getItems().get(rowItem).getMaterialNameCheckBox().isSelected()) {
+                        HSSFRow hssfRow = hssfSheet2.createRow(rowTempPoint2++);
+                        for (int c = 0; c < techMaterialTable.getColumns().size(); c++) {
+                            switch (c) {
+                                case 0, 1: {
+                                    Object cellValue = techMaterialTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
+                                    if (cellValue != null) {
+                                        if (cellValue.getClass() == CheckBox.class) {
+                                            hssfRow.createCell(c).setCellValue(((CheckBox) cellValue).getText());
+                                        } else {
+                                            hssfRow.createCell(c).setCellValue(cellValue.toString());
+                                        }
+                                        if (c == 0) {
+                                            hssfRow.getCell(c).setCellStyle(firstDataCellStyle);
+                                        } else {
+                                            hssfRow.getCell(c).setCellStyle(dataCellStyle);
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 5: {
+                                    Object cellValue = techMaterialTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
+                                    if (cellValue != null) {
+                                        hssfRow.createCell(2).setCellValue(cellValue.toString());
+                                        hssfRow.getCell(2).setCellStyle(dataCellStyle);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
             if (!isAllEdgesUnselected()) {
-                HSSFRow edgeRow = hssfSheet.createRow(rowTempPoint++);
+                HSSFRow edgeRow = hssfSheet1.createRow(rowTempPoint1++);
                 edgeRow.createCell(0).setCellValue("Кромочные материалы");
                 edgeRow.getCell(0).setCellStyle(groupTitleStyle);
-                HSSFRow edgeTitleRow = hssfSheet.createRow(rowTempPoint++);
+                HSSFRow edgeTitleRow = hssfSheet1.createRow(rowTempPoint1++);
                 for (int i = 0; i < techEdgeTable.getColumns().size(); i++) {
                     edgeTitleRow.createCell(i).setCellValue(techEdgeTable.getColumns().get(i).getText());
                     edgeTitleRow.getCell(i).setCellStyle(titleCellStyle);
                 }
                 for (int rowItem = 0; rowItem < techEdgeTable.getItems().size(); rowItem++) {
                     if (techEdgeTable.getItems().get(rowItem).getNameCheckBox().isSelected()) {
-                        HSSFRow hssfRow = hssfSheet.createRow(rowTempPoint++);
+                        HSSFRow hssfRow = hssfSheet1.createRow(rowTempPoint1++);
                         for (int c = 0; c < techEdgeTable.getColumns().size(); c++) {
                             Object cellValue = techEdgeTable.getColumns().get(c).getCellObservableValue(rowItem).getValue();
                             if (cellValue != null) {
@@ -398,17 +421,18 @@ public class MainFrameController implements BazisXMLTags {
                     }
                 }
             }
-            rowTempPoint++;
-            HSSFRow curvedEdgeLengthRow = hssfSheet.createRow(rowTempPoint);
+            rowTempPoint2++;
+            HSSFRow curvedEdgeLengthRow = hssfSheet2.createRow(rowTempPoint2);
             curvedEdgeLengthRow.createCell(0).setCellValue(curvedEdgeLengthLabel.getText());
             curvedEdgeLengthRow.getCell(0).setCellStyle(dataCellStyle);
-            rowTempPoint++;
-            HSSFRow totalProductionEdgeLengthRow = hssfSheet.createRow(rowTempPoint);
+            rowTempPoint2++;
+            HSSFRow totalProductionEdgeLengthRow = hssfSheet2.createRow(rowTempPoint2);
             totalProductionEdgeLengthRow.createCell(0).setCellValue(fullEdgeLengthLabel.getText());
             totalProductionEdgeLengthRow.getCell(0).setCellStyle(dataCellStyle);
 
             for (short i = 0; i < 5; i++) {
-                hssfSheet.autoSizeColumn(i);
+                hssfSheet1.autoSizeColumn(i);
+                if (i < 3) hssfSheet2.autoSizeColumn(i);
             }
             try (FileOutputStream outputStream = new FileOutputStream(file.getAbsolutePath())) {
                 hssfWorkbook.write(outputStream);
@@ -426,6 +450,36 @@ public class MainFrameController implements BazisXMLTags {
                 errorAlert.showAndWait();
             }
         }
+    }
+
+    /**
+     * Генерирует заглавную таблицу с общими данными о заказе на листе в .xls файле
+     *
+     * @param rowTempPoint       стартовый индекс строки
+     * @param orderCellStyle     стиль ячейки наименования параметра
+     * @param orderDataCellStyle стиль ячейки со значением параметра
+     * @param hssfSheet          лист, на котором будет отображаться таблица
+     * @return финишный индекс строки после построения заглавной таблицы
+     */
+    private int getXLSSheetHeader(int rowTempPoint, HSSFCellStyle orderCellStyle, HSSFCellStyle orderDataCellStyle, HSSFSheet hssfSheet) {
+        HSSFRow productOrderRow = hssfSheet.createRow(rowTempPoint++);
+        productOrderRow.createCell(0).setCellValue("Заказ:");
+        productOrderRow.getCell(0).setCellStyle(orderCellStyle);
+        productOrderRow.createCell(1).setCellValue(product.getOrder());
+        productOrderRow.getCell(1).setCellStyle(orderDataCellStyle);
+
+        HSSFRow productNominationRow = hssfSheet.createRow(rowTempPoint++);
+        productNominationRow.createCell(0).setCellValue("Наименование:");
+        productNominationRow.getCell(0).setCellStyle(orderCellStyle);
+        productNominationRow.createCell(1).setCellValue(product.getNomination());
+        productNominationRow.getCell(1).setCellStyle(orderDataCellStyle);
+
+        HSSFRow productArticleRow = hssfSheet.createRow(rowTempPoint++);
+        productArticleRow.createCell(0).setCellValue("Артикул:");
+        productArticleRow.getCell(0).setCellStyle(orderCellStyle);
+        productArticleRow.createCell(1).setCellValue(product.getArticle());
+        productArticleRow.getCell(1).setCellStyle(orderDataCellStyle);
+        return rowTempPoint;
     }
 
     private Boolean isAllEdgesUnselected() {
@@ -643,9 +697,8 @@ public class MainFrameController implements BazisXMLTags {
                                     edge.getWidth(),
                                     edge.getThickness(),
                                     state));
-                            edgesMap.get(edge.getNomination()).getNameCheckBox().setOnMouseClicked(event -> {
-                                fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(techEdgeDataArrayList)) + " м");
-                            });
+                            edgesMap.get(edge.getNomination()).getNameCheckBox().setOnMouseClicked(event ->
+                                    fullEdgeLengthLabel.setText("Производственный метраж кромки - " + String.format("%.0f", getProductionEdgeLength(techEdgeDataArrayList)) + " м"));
                         }
                     });
                 }
@@ -657,9 +710,10 @@ public class MainFrameController implements BazisXMLTags {
             v.setOrderWholeLength();
             edgeData.add(v);
         });
+        float allCurvedEdgeLength = getAllCurvedEdgeLength(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes));
         curvedEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth());
         curvedEdgeLengthLabel.widthProperty().addListener(observable -> curvedEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth()));
-        curvedEdgeLengthLabel.setText("Криволинейный метраж кромки - " + String.format("%.0f", getCurvedEdgeLength(panelsBySelectedMaterial(panels, mainMaterialCheckBoxes)) / 1000) + " м");
+        curvedEdgeLengthLabel.setText("Криволинейный метраж кромки - " + (allCurvedEdgeLength == 0 ? "0" : String.format("%.1f", allCurvedEdgeLength / 1000)) + " м");
         curvedEdgeLengthLabel.setStyle("-fx-font-size: 12px; -fx-border-color: black; -fx-end-margin: 5px; -fx-start-margin: 5px");
         fullEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth());
         fullEdgeLengthLabel.widthProperty().addListener(observable -> fullEdgeLengthLabel.setPrefWidth(materialCheckList.getWidth()));
@@ -691,13 +745,29 @@ public class MainFrameController implements BazisXMLTags {
      * @param panelArrayList список панелей
      * @return возвращает метраж криволинейной оклейки
      */
-    public Float getCurvedEdgeLength(ArrayList<Panel> panelArrayList) {
-        Float curvedLength = 0.0f;
+    public Float getAllCurvedEdgeLength(ArrayList<Panel> panelArrayList) {
+        float curvedLength = 0.0f;
         for (Panel panel : panelArrayList) {
             if (panel.getEdgeLists().get(4).size() > 0) {
                 for (Edge edge : panel.getEdgeLists().get(4)) {
                     curvedLength += edge.getLength() * panel.getAmount();
                 }
+            }
+        }
+        return curvedLength;
+    }
+
+    /**
+     * Метод для учёта криволинейной оклейки на панели
+     *
+     * @param panel панель
+     * @return возвращает метраж криволинейной кромки на панели
+     */
+    public Float getCurvedEdgeLength(Panel panel) {
+        float curvedLength = 0.0f;
+        if (panel.getEdgeLists().get(4).size() > 0) {
+            for (Edge edge : panel.getEdgeLists().get(4)) {
+                curvedLength += edge.getLength() * panel.getAmount();
             }
         }
         return curvedLength;
@@ -716,6 +786,7 @@ public class MainFrameController implements BazisXMLTags {
         TreeSet<String> facingSurfaceNames = new TreeSet<>();
         HashMap<String, Float> mainMaterialSquareMap = new HashMap<>();
         HashMap<String, Float> facingSurfaceSquareMap = new HashMap<>();
+        HashMap<String, Float> curvedEdgeLengthMap = new HashMap<>();
         for (Panel p : panelArrayList) {
             mainMaterialNames.add(p.getMainMaterial().getNomination());
             if (p.getFacingSurfaces() != null) {
@@ -732,12 +803,15 @@ public class MainFrameController implements BazisXMLTags {
         // считаем площадь основных материалов
         for (String str : mainMaterialNames) {
             float square = 0.0f;
+            float curvedEdgeLength = 0.0f;
             for (Panel p : panelArrayList) {
                 if (p.getMainMaterial().getNomination().equals(str)) {
                     square += ((p.getLength() / 1000) * (p.getWidth() / 1000) * p.getAmount());
+                    curvedEdgeLength += getCurvedEdgeLength(p);
                 }
             }
             mainMaterialSquareMap.put(str, square);
+            curvedEdgeLengthMap.put(str, curvedEdgeLength);
         }
         // считаем площадь облицованных по пласти материалов
         for (String str : facingSurfaceNames) {
@@ -755,7 +829,7 @@ public class MainFrameController implements BazisXMLTags {
         for (String str : mainMaterialNames) {
             if (materialDBList.containsKey(str)) {
                 String format = materialDBList.get(str).getFormatChoiceBox().getValue();
-                Boolean state = selectionOfExportMaterials.getOrDefault(str, true);
+                Boolean status = selectionOfExportMaterials.getOrDefault(str, true);
                 if (facingSurfaceSquareMap.get(str) != null) {
                     float squareInList = (mainMaterialSquareMap.get(str) == null ? 0 : mainMaterialSquareMap.get(str)) + facingSurfaceSquareMap.get(str);
                     squareInList = (squareInList * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
@@ -767,7 +841,8 @@ public class MainFrameController implements BazisXMLTags {
                             materialDBList.get(str).getFormatChoiceBox(),
                             "лист",
                             square.setScale(0, RoundingMode.CEILING).toString(),
-                            state));
+                            curvedEdgeLengthMap.get(str) == 0 ? "0" : String.format("%.1f", curvedEdgeLengthMap.get(str) / 1000),
+                            status));
                 } else {
                     float squareInList = (mainMaterialSquareMap.get(str) * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
                     BigDecimal square = new BigDecimal(squareInList);
@@ -778,7 +853,8 @@ public class MainFrameController implements BazisXMLTags {
                             materialDBList.get(str).getFormatChoiceBox(),
                             "лист",
                             square.setScale(0, RoundingMode.CEILING).toString(),
-                            state));
+                            curvedEdgeLengthMap.get(str) == 0 ? "0" : String.format("%.1f", curvedEdgeLengthMap.get(str) / 1000),
+                            status));
                 }
             } else {
                 absentMaterials.add(str);
@@ -815,6 +891,11 @@ public class MainFrameController implements BazisXMLTags {
         amountColumn.setStyle("-fx-alignment: CENTER;");
         amountColumn.setCellValueFactory(new PropertyValueFactory<>("Amount"));
         techMaterialTable.getColumns().add(amountColumn);
+        TableColumn<TechMaterialData, String> curvedEdgeColumn = new TableColumn<>("Криволинейная\n кромка, м");
+        curvedEdgeColumn.editableProperty().setValue(true);
+        curvedEdgeColumn.setStyle("-fx-alignment: CENTER;");
+        curvedEdgeColumn.setCellValueFactory(new PropertyValueFactory<>("curvedEdge"));
+        techMaterialTable.getColumns().add(curvedEdgeColumn);
     }
 
     void setEdgeTable(ArrayList<TechEdgeData> techDataList) {

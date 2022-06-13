@@ -37,7 +37,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="900.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.14-internal"
+<VBox prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.14-internal"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.furniture.technologdata.controllers.MainFrameController">
     <MenuBar prefHeight="35.0" VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" style="-fx-font-size: 14px" text="Файл">
