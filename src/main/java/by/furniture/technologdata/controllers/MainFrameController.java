@@ -841,7 +841,7 @@ public class MainFrameController implements BazisXMLTags {
                             materialDBList.get(str).getFormatChoiceBox(),
                             "лист",
                             square.setScale(0, RoundingMode.CEILING).toString(),
-                            curvedEdgeLengthMap.get(str) == 0 ? "0" : String.format("%.1f", curvedEdgeLengthMap.get(str) / 1000),
+                            (!curvedEdgeLengthMap.containsKey(str) || curvedEdgeLengthMap.get(str) == 0) ? "0" : String.format("%.1f", curvedEdgeLengthMap.get(str) / 1000),
                             status));
                 } else {
                     float squareInList = (mainMaterialSquareMap.get(str) * ConfigurationProperties.getConfigurationProperties().getMaterialCoefficient()) / materialDBList.get(str).listSquare(format);
