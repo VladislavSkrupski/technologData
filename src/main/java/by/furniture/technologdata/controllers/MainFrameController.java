@@ -178,8 +178,24 @@ public class MainFrameController implements BazisXMLTags {
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 e.printStackTrace();
             }
+            boolean noMaterial = false;
+            List<Panel> noMainMaterialPanels = new ArrayList<>();
             for (Panel panel : panels) {
-                mainMaterials.add(panel.getMainMaterial().getNomination());
+                if (panel.getMainMaterial() != null) {
+                    mainMaterials.add(panel.getMainMaterial().getNomination());
+                } else {
+                    noMaterial = true;
+                    noMainMaterialPanels.add(panel);
+                }
+            }
+            if (noMaterial) {
+                StringBuilder noMainMaterialPanelsPosition = new StringBuilder();
+                noMainMaterialPanels.forEach(panel -> noMainMaterialPanelsPosition.append(panel.getPosition()).append("\n"));
+                Alert noMainMaterialAlert = new Alert(Alert.AlertType.ERROR);
+                noMainMaterialAlert.setTitle("Материал исключён из обработки");
+                noMainMaterialAlert.setHeaderText("Заказ "+product.getNomination());
+                noMainMaterialAlert.setContentText("Для панелей с позицией:\n" + noMainMaterialPanelsPosition + "отключён вывод материалов в XML");
+                noMainMaterialAlert.showAndWait();
             }
             productOrderLabel.setText(product.getOrder());
             productNominationLabel.setText(product.getNomination());
@@ -660,8 +676,10 @@ public class MainFrameController implements BazisXMLTags {
         for (CheckBox chk : checkBoxMaterialList) {
             if (chk.isSelected()) {
                 for (Panel panel : allPanels) {
-                    if (panel.getMainMaterial().getNomination().equals(chk.getText())) {
-                        selectedMaterialPanels.add(panel);
+                    if (panel.getMainMaterial() != null) {
+                        if (panel.getMainMaterial().getNomination().equals(chk.getText())) {
+                            selectedMaterialPanels.add(panel);
+                        }
                     }
                 }
             }
@@ -788,13 +806,15 @@ public class MainFrameController implements BazisXMLTags {
         HashMap<String, Float> facingSurfaceSquareMap = new HashMap<>();
         HashMap<String, Float> curvedEdgeLengthMap = new HashMap<>();
         for (Panel p : panelArrayList) {
-            mainMaterialNames.add(p.getMainMaterial().getNomination());
-            if (p.getFacingSurfaces() != null) {
-                for (int a = 0; a < p.getFacingSurfaces().size(); a++) {
-                    if (p.getFacingSurfaces().get(a) != null) {
-                        for (FacingSurface facingSurface : p.getFacingSurfaces().get(a)) {
-                            facingSurfacesList.add(facingSurface);
-                            facingSurfaceNames.add(facingSurface.getNomination());
+            if (p.getMainMaterial() != null) {
+                mainMaterialNames.add(p.getMainMaterial().getNomination());
+                if (p.getFacingSurfaces() != null) {
+                    for (int a = 0; a < p.getFacingSurfaces().size(); a++) {
+                        if (p.getFacingSurfaces().get(a) != null) {
+                            for (FacingSurface facingSurface : p.getFacingSurfaces().get(a)) {
+                                facingSurfacesList.add(facingSurface);
+                                facingSurfaceNames.add(facingSurface.getNomination());
+                            }
                         }
                     }
                 }
@@ -805,9 +825,11 @@ public class MainFrameController implements BazisXMLTags {
             float square = 0.0f;
             float curvedEdgeLength = 0.0f;
             for (Panel p : panelArrayList) {
-                if (p.getMainMaterial().getNomination().equals(str)) {
-                    square += ((p.getLength() / 1000) * (p.getWidth() / 1000) * p.getAmount());
-                    curvedEdgeLength += getCurvedEdgeLength(p);
+                if (p.getMainMaterial() != null) {
+                    if (p.getMainMaterial().getNomination().equals(str)) {
+                        square += ((p.getLength() / 1000) * (p.getWidth() / 1000) * p.getAmount());
+                        curvedEdgeLength += getCurvedEdgeLength(p);
+                    }
                 }
             }
             mainMaterialSquareMap.put(str, square);
